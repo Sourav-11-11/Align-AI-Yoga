@@ -1,0 +1,49 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Model weights (very important)
+*.pt
+*.weights
+*.h5
+*.onnx
+
+# YOLO config backup
+*.cfg
+
+# Saved output images
+saved_images/
+
+# Large datasets (if heavy)
+dataset/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+data/
+dataset/
+saved_images/
+*.pt
+*.weights
+
+# Build
+dist/
+build/
