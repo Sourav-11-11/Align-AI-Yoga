@@ -1,70 +1,49 @@
-{% extends 'index.html' %}
+﻿{% extends 'index.html' %}
+{% block title %}Pose Result — Align AI Yoga{% endblock %}
 
 {% block navbar %}
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{url_for('home')}}" style="color: white;">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('yoga1')}}" style="color: yellow; padding-left: 30px;">Yoga</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('chatbot')}}" style="color: white; padding-left: 30px;">chatbot</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('dashboard')}}" style="color: white; padding-left: 30px;">Dashboard</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('index')}}" style="color: white; padding-left: 30px;">Logout</a>
-        </li>
-    </ul>
+  <ul class="navbar-nav ms-auto align-items-lg-center">
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.home') }}">Home</a></li>
+    <li class="nav-item"><a class="nav-link nav-text nav-active" href="{{ url_for('yoga.yoga1') }}">Yoga</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.analyze') }}">Analyze</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.chatbot') }}">Chatbot</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.logout') }}">Logout</a></li>
+  </ul>
 {% endblock %}
 
-
 {% block content %}
-    <div style="min-height: 800px; background-color: rgba(0, 0, 0, 0.797);">
-        <div class="container-fluid">
-            <div class="contact_section_2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <center>
-                            <div style="background-color: rgba(255, 255, 255, 0.575); min-width: 500px; width: fit-content; height: fit-content; border-radius: 10px;">
-                                <div class="col-11" style="padding-top: 20px; padding-bottom: 20px;">
-                                    
-                                    <h1 class="contact_taital" style="color: rgba(0, 0, 0, 0.849);">Result</h1>
-                                    {% if image_name %}
-                                        <div class="pose-image">
-                                            <h2>Annotated Pose:</h2>
-                                            <img src="{{ url_for('static', filename='saved_images/' ~ image_name) }}" alt="Annotated Yoga Pose" style="height: 200px; width: 200px;">
-                                        </div>
-                                    {% endif %}
+<div class="page-overlay">
+  <div class="container" style="max-width:860px;">
+    <div class="ui-card">
+      <p class="hero-eyebrow mb-1">Step 3 of 3</p>
+      <h2 class="section-title mb-4">Analysis Result</h2>
 
-                                    {% if feedback %}
-                                        {% if feedback is string %}
-                                            <p>{{ feedback }}</p>
-                                        {% else %}
-                                            <h2><br>Corrections Needed:</h2>
-                                            <div class="col-10">
-                                                <ul>
-                                                    {% for correction in feedback %}
-                                                        <li style="text-align: left;"> * {{ correction }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                            
-                                        {% endif %}
-                                    {% endif %}
+      <!-- Annotated pose image -->
+      {% if image_name %}
+      <div class="text-center mb-4">
+        <img src="{{ url_for('static', filename='saved_images/' ~ image_name) }}"
+             alt="Annotated Yoga Pose" class="result-img">
+      </div>
+      {% endif %}
 
-                                </div>
+      <!-- Correction feedback -->
+      {% if feedback %}
+        {% if feedback is string %}
+          <div class="all-correct-box">{{ feedback }}</div>
+        {% else %}
+          <h5 class="section-title mb-3" style="font-size:1rem;">Corrections to Improve</h5>
+          {% for correction in feedback %}
+            <div class="correction-item">{{ correction }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endif %}
 
-                                <a href="{{url_for('yoga1')}}" class="btn btn-info" style="margin-top: 20px; width: 30%;">Predcit again</a><br><br>
-
-                            </div>
-                        </center>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div
+      <!-- Back button -->
+      <div class="text-center mt-4">
+        <a href="{{ url_for('yoga.yoga1') }}" class="btn-beige-outline">Try Another Pose</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

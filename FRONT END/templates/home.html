@@ -1,49 +1,186 @@
-{% extends 'index.html' %}
+﻿{% extends 'index.html' %}
+{% block title %}Home — Align AI Yoga{% endblock %}
 
 {% block navbar %}
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{url_for('home')}}" style="color: yellow;">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('yoga1')}}" style="color: white; padding-left: 30px;">Yoga</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('dashboard')}}" style="color: white; padding-left: 30px;">Dashboard</a>
-        </li>
-        <li class="nav-item">
-         <a class="nav-link" href="{{url_for('chatbot')}}" style="color: white; padding-left: 30px;">chatbot</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('index')}}" style="color: white; padding-left: 30px;">Logout</a>
-        </li>
-        
-    </ul>
+  <ul class="navbar-nav ms-auto align-items-lg-center">
+    <li class="nav-item"><a class="nav-link nav-text nav-active" href="{{ url_for('yoga.home') }}">Home</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.yoga1') }}">Yoga</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.analyze') }}">Analyze</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.chatbot') }}">Chatbot</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.logout') }}">Logout</a></li>
+  </ul>
 {% endblock %}
 
 {% block content %}
-<div class="banner_section layout_padding" style="display: flex; align-items: center; justify-content: center; height: 100vh; background-color: rgba(0, 0, 0, 0.797);">
-    <div class="container">
-       <div id="banner_slider" class="carousel slide" data-ride="carousel">
-          <div class="carousel-inner">
-             <div class="carousel-item active">
-                <div class="row justify-content-center">
-                   <div class="banner_taital_main text-center" style="margin-top: -110px;">
-                      
-                      <h1 class="banner_taital" style="color: white;">ALIGN AI YOGA</h1>
-                      <h5 class="tasty_text">Interactive web application for Yoga Pose Analysis</h5>
-                      <p class="banner_text" style="color: white;">
-                         "Align your Breath, Align your mind and Align your Life"
-                      </p>
-                      <div class="btn_main" style="display: flex; justify-content: center; gap: 20px;"> 
-                        <div class="about_bt"><a href="{{url_for('chatbot')}}">Chat with Lumi AI ! </a></div>
-                        <div class="about_bt"><a href="{{url_for('yoga1')}}">Start your Yoga </a></div>           
-                      </div>                  
-                   </div>
-                </div>
-             </div>
-          </div>
-       </div>
+<!-- ── Hero ── -->
+<div class="page-overlay">
+  <div class="container text-center" style="max-width:700px;">
+    <p class="hero-eyebrow">Hello, {{ user_name }}</p>
+    <h1 class="hero-title">Welcome to Align AI Yoga</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">Let your yoga begin &mdash; breathe deep, move mindfully, align perfectly</p>
+    <p class="hero-quote">&ldquo;Align your Breath, Align your Mind and Align your Life&rdquo;</p>
+    <div class="d-flex justify-content-center flex-wrap" style="gap:1.25rem; margin-top:2rem;">
+      <a href="{{ url_for('dashboard.chatbot') }}" class="btn-beige-outline">Chat with Lumi</a>
+      <a href="{{ url_for('yoga.yoga1') }}" class="btn-beige">Start Yoga Session</a>
     </div>
- </div>
+  </div>
+  <div class="scroll-hint"><span>&#8595;</span><small>explore below</small></div>
+</div>
+
+<!-- ── Benefits of Yoga ── -->
+<section class="lp-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="lp-eyebrow">Why Practice Yoga?</p>
+      <h2 class="lp-title">Transform Your Mind &amp; Body</h2>
+      <div class="lp-divider mx-auto"></div>
+      <p class="lp-sub mx-auto" style="max-width:580px;">Yoga is more than stretching &mdash; it is a science of movement, breath, and mindfulness that rewires how you think, feel and exist in your body.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="benefit-card">
+          <span class="benefit-ico">&#128170;</span>
+          <div class="benefit-title">Strength &amp; Flexibility</div>
+          <p class="benefit-text">Build lean muscle and increase full-body range of motion through progressive, mindful movement sequences.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="benefit-card">
+          <span class="benefit-ico">&#129504;</span>
+          <div class="benefit-title">Mental Clarity &amp; Focus</div>
+          <p class="benefit-text">Quiet mental noise, sharpen concentration and foster creativity through intentional breathwork and movement.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="benefit-card">
+          <span class="benefit-ico">&#127807;</span>
+          <div class="benefit-title">Stress Relief &amp; Calm</div>
+          <p class="benefit-text">Activate your parasympathetic nervous system, lower cortisol, and cultivate lasting calm in your daily life.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="benefit-card">
+          <span class="benefit-ico">&#9878;&#65039;</span>
+          <div class="benefit-title">Balance &amp; Coordination</div>
+          <p class="benefit-text">Develop proprioception and body awareness that enhances athletic performance and everyday stability.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="benefit-card">
+          <span class="benefit-ico">&#127782;</span>
+          <div class="benefit-title">Deeper Breathing</div>
+          <p class="benefit-text">Expand lung capacity and oxygenate every cell through pranayama &mdash; the ancient science of breath control.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="benefit-card">
+          <span class="benefit-ico">&#10024;</span>
+          <div class="benefit-title">Inner Peace</div>
+          <p class="benefit-text">Reconnect with yourself, build emotional resilience, and find stillness amid the rush of modern life.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Why Alignment Matters ── -->
+<section class="lp-section lp-section--alt">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <p class="lp-eyebrow">Alignment Science</p>
+        <h2 class="lp-title">Why Correct Posture Changes Everything</h2>
+        <div class="lp-divider"></div>
+        <p class="lp-sub">Most practitioners never reach their full potential because nobody corrects their form. Misalignment reduces effectiveness and causes chronic injury. Precision is everything.</p>
+      </div>
+      <div class="col-lg-7">
+        <div class="posture-block">
+          <span class="posture-ico">&#128737;&#65039;</span>
+          <div>
+            <div class="benefit-title">Injury Prevention</div>
+            <p class="step-text">Improper form places dangerous stress on joints, ligaments and the spine. Correct alignment distributes load safely, protecting your body over a lifetime of practice.</p>
+          </div>
+        </div>
+        <div class="posture-block">
+          <span class="posture-ico">&#9889;</span>
+          <div>
+            <div class="benefit-title">Maximum Effectiveness</div>
+            <p class="step-text">When properly aligned, muscles activate as intended &mdash; giving you 100% of each pose&rsquo;s benefits rather than compensating with the wrong muscle groups.</p>
+          </div>
+        </div>
+        <div class="posture-block">
+          <span class="posture-ico">&#128200;</span>
+          <div>
+            <div class="benefit-title">Faster Progress</div>
+            <p class="step-text">Practitioners who prioritise form over completion progress significantly faster and safely unlock advanced poses months ahead of schedule.</p>
+          </div>
+        </div>
+        <div class="posture-block">
+          <span class="posture-ico">&#129488;</span>
+          <div>
+            <div class="benefit-title">Mind-Body Connection</div>
+            <p class="step-text">Precise alignment deepens the meditative quality of yoga, intensifying body awareness and uniting movement with consciousness.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How Align AI Works ── -->
+<section class="lp-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="lp-eyebrow">How It Works</p>
+      <h2 class="lp-title">Your Personal AI Yoga Coach</h2>
+      <div class="lp-divider mx-auto"></div>
+      <p class="lp-sub mx-auto" style="max-width:600px;">Align AI uses computer vision and keypoint detection to analyse your pose frame-by-frame &mdash; like having a world-class instructor available 24/7, on your device.</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-title">Tell Us Your Mood</div>
+          <p class="step-text">Our AI recommendation engine selects the most beneficial poses based on your emotional state &mdash; because the right pose at the right moment is transformative.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-title">Upload Your Pose</div>
+          <p class="step-text">Snap a photo attempting the pose. Our MediaPipe-powered system maps 33 body keypoints with sub-millimetre precision to understand exactly how you are positioned.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-title">Receive Instant Feedback</div>
+          <p class="step-text">Get specific, joint-by-joint correction guidance alongside an annotated image showing precisely what to adjust for a perfect, safe pose.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="container">
+    <p class="lp-eyebrow">Your Mat Awaits</p>
+    <h2 class="lp-title" style="max-width:640px; margin:0 auto 1rem;">&ldquo;Every session, every breath, every perfect pose &mdash; one step closer to your best self.&rdquo;</h2>
+    <p class="lp-sub mx-auto mb-4" style="max-width:500px;">Ready to move? Let AI guide your alignment, one pose at a time.</p>
+    <div class="d-flex justify-content-center flex-wrap" style="gap:1.25rem;">
+      <a href="{{ url_for('dashboard.chatbot') }}" class="btn-beige-outline">Chat with Lumi</a>
+      <a href="{{ url_for('yoga.yoga1') }}" class="btn-beige">Start Yoga Session</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="lp-footer">
+  <div class="container">
+    <p>&#129512; Align AI Yoga &nbsp;&middot;&nbsp; AI-Powered Pose Correction &nbsp;&middot;&nbsp; &copy; 2026</p>
+  </div>
+</footer>
 {% endblock %}

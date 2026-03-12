@@ -1,0 +1,640 @@
+{
+  "default": {
+    "summary": "A steady yoga posture that should feel supported, spacious, and calm when practised with control.",
+    "steps": [
+      "Set your base first and move into the shape slowly instead of forcing the final position.",
+      "Lengthen your spine before trying to go deeper so the pose comes from alignment, not strain.",
+      "Relax your jaw, face, and shoulders while keeping the main working muscles active.",
+      "Hold for several smooth breaths and leave the pose as carefully as you entered it."
+    ],
+    "alignment_tips": [
+      "Distribute weight evenly through your main contact points.",
+      "Keep the neck long and avoid collapsing into the lower back.",
+      "Use a smaller range of motion if your breath becomes choppy or you feel pinching.",
+      "Choose control and steadiness over depth."
+    ],
+    "benefits": [
+      "Improves body awareness",
+      "Builds mindful control",
+      "Encourages steadier breathing"
+    ],
+    "breathing": "Inhale to create length and space. Exhale to settle into the pose without forcing it.",
+    "warnings": "Back out of the pose if you feel sharp pain, numbness, dizziness, or joint compression. Use props or a smaller shape when needed."
+  },
+  "families": [
+    {
+      "name": "grounded_seated",
+      "poses": [
+        "Baddha Konasana",
+        "Dandasana",
+        "Garbha Pindasana",
+        "Gomukhasana",
+        "Sukhasana",
+        "Vajrasana",
+        "Virasana"
+      ],
+      "summary": "A grounded seated or kneeling pose that builds posture, calm focus, and steady breath.",
+      "steps": [
+        "Sit on a folded blanket or block if that helps you lengthen the spine comfortably.",
+        "Place your legs and feet deliberately so both sides of the pelvis feel balanced on the floor.",
+        "Lift through the crown of the head and soften the ribs so the lower back stays neutral.",
+        "Rest your hands lightly, relax the shoulders, and stay for several even breaths."
+      ],
+      "alignment_tips": [
+        "Root evenly through the sitting bones or shins.",
+        "Keep the chest broad without thrusting the ribs forward.",
+        "If the knees sit very high, add support under the thighs or hips.",
+        "Choose height under the seat before rounding the spine."
+      ],
+      "benefits": [
+        "Encourages calm attention",
+        "Improves upright posture",
+        "Creates hip and ankle awareness"
+      ],
+      "breathing": "Take smooth nasal breaths and let each exhale release unnecessary effort in the face, jaw, and shoulders.",
+      "warnings": "Support the hips or knees if your joints feel compressed. Avoid forcing the legs into position."
+    },
+    {
+      "name": "restorative_recovery",
+      "poses": [
+        "Ananda Balasana",
+        "Makarasana",
+        "Savasana",
+        "Simhasana",
+        "Supta Padangusthasana",
+        "Supta Virasana",
+        "Uttana Shishosana",
+        "Yoganidrasana"
+      ],
+      "summary": "A restorative posture designed to release excess tension and make breathing feel slower and easier.",
+      "steps": [
+        "Set up the pose so your neck, lower back, and hips feel supported before you settle in.",
+        "Use props or reduce the range of motion until the body can soften without guarding.",
+        "Let the front body relax while keeping enough structure to protect the joints.",
+        "Stay still for several calm breaths and come out gradually."
+      ],
+      "alignment_tips": [
+        "Support tight areas instead of pushing through them.",
+        "Keep the throat soft and the face relaxed.",
+        "Let the breath widen the ribs and belly without strain.",
+        "If the lower back arches too much, reduce the depth or add support."
+      ],
+      "benefits": [
+        "Promotes recovery",
+        "Reduces nervous-system tension",
+        "Improves breath awareness"
+      ],
+      "breathing": "Lengthen the exhale and allow each inhale to expand the ribs, side body, and back body gently.",
+      "warnings": "Use props generously. Exit early if you feel tingling, pinching, or any pressure in the knees, neck, or lower back."
+    },
+    {
+      "name": "cat_cow_spinal_wave",
+      "poses": [
+        "Bitilasana",
+        "Chakravakasana",
+        "Marjaryasana"
+      ],
+      "summary": "A spinal mobility pattern that links breath to movement and teaches healthy articulation through the back.",
+      "steps": [
+        "Start on hands and knees with wrists under shoulders and knees under hips.",
+        "On an inhale, lengthen the front body and broaden the collarbones without collapsing the low back.",
+        "On an exhale, press the floor away and round from the upper back to the tailbone.",
+        "Move slowly for several cycles and make the wave smooth rather than dramatic."
+      ],
+      "alignment_tips": [
+        "Keep the elbows straight but not locked.",
+        "Spread the fingers and press evenly through both hands.",
+        "Let the pelvis initiate part of the movement instead of only moving the neck.",
+        "Keep the range comfortable if the wrists or knees are sensitive."
+      ],
+      "benefits": [
+        "Mobilises the spine",
+        "Warms the shoulders and hips",
+        "Improves coordination with breath"
+      ],
+      "breathing": "Inhale for extension, exhale for rounding, and make the breath set the pace.",
+      "warnings": "Pad the knees if needed and keep the motion gentle if you have acute back pain."
+    },
+    {
+      "name": "foundational_strength",
+      "poses": [
+        "Adho Mukha Svanasana",
+        "Ardha Uttanasana",
+        "Ashtanga Namaskara",
+        "Chaturanga Dandasana",
+        "Makara Adho Mukha Svanasana",
+        "Padangusthasana",
+        "Phalakasana",
+        "Prasarita Padottanasana"
+      ],
+      "summary": "A strength-based foundation pose that asks for long lines, active shoulders, and intelligent weight distribution.",
+      "steps": [
+        "Establish your hands or feet first so the base feels stable and even.",
+        "Create length from the crown of the head through the spine before deepening the shape.",
+        "Engage the core and shoulders so the torso stays supported rather than sinking.",
+        "Hold with smooth breaths and come out before alignment starts to unravel."
+      ],
+      "alignment_tips": [
+        "Press evenly through the whole hand or foot, not only one corner.",
+        "Draw the lower ribs inward to support the trunk.",
+        "Keep the neck in line with the spine instead of dropping the head heavily.",
+        "Bend the knees or shorten the stance if the hamstrings or shoulders limit length."
+      ],
+      "benefits": [
+        "Builds integrated strength",
+        "Improves shoulder stability",
+        "Lengthens the back line of the body"
+      ],
+      "breathing": "Use steady nasal breathing and keep the exhale strong enough to support the core.",
+      "warnings": "Protect the wrists, shoulders, and hamstrings by reducing load or range when needed."
+    },
+    {
+      "name": "lunges_warriors",
+      "poses": [
+        "Anjaneyasana",
+        "Parsvottanasana",
+        "Urdhva Hastasana",
+        "Utthita Ashwa Sanchalanasana",
+        "Virabhadrasana I",
+        "Virabhadrasana II",
+        "Virabhadrasana III"
+      ],
+      "summary": "A dynamic standing family that develops grounded legs, open hips, and confident posture.",
+      "steps": [
+        "Place the feet first so your stance is stable from heel to toes.",
+        "Bend or hinge only after you feel the legs actively supporting the pelvis.",
+        "Lengthen through the spine and reach through the arms without tightening the neck.",
+        "Stay steady for several breaths, then exit with the same control you used to enter."
+      ],
+      "alignment_tips": [
+        "Track the front knee in the same direction as the toes.",
+        "Keep the back leg active instead of letting it go passive.",
+        "Square or open the hips only as much as the pose requires, not more.",
+        "Use a shorter stance if balance or breath is unstable."
+      ],
+      "benefits": [
+        "Strengthens legs and hips",
+        "Improves stamina and balance",
+        "Opens the front body"
+      ],
+      "breathing": "Inhale to lengthen the spine and arms. Exhale to root through the legs and steady the pelvis.",
+      "warnings": "Adjust depth if the front knee, lower back, or hip flexors feel strained."
+    },
+    {
+      "name": "standing_balance_side_body",
+      "poses": [
+        "Anantasana",
+        "Ardha Chandrasana",
+        "Garudasana",
+        "Parighasana",
+        "Utthita Hasta Padangustasana",
+        "Utthita Trikonasana",
+        "Vriksasana"
+      ],
+      "summary": "A standing balance or side-body posture that depends on a steady base and clear directional reach.",
+      "steps": [
+        "Ground through the standing foot or lower support points before lifting or extending.",
+        "Lengthen both sides of the waist so the spine stays spacious.",
+        "Reach through the top arm or lifted leg without gripping the jaw or shoulders.",
+        "Fix your gaze on one point and hold only as long as your breath remains even."
+      ],
+      "alignment_tips": [
+        "Micro-bend the standing knee if locking the joint throws you off balance.",
+        "Press down to grow upward instead of leaning into the lower back.",
+        "Stack shoulders and hips as much as the pose asks for without twisting unintentionally.",
+        "Use a wall or shorten the range when balance is inconsistent."
+      ],
+      "benefits": [
+        "Builds balance and focus",
+        "Strengthens hips and legs",
+        "Creates side-body length"
+      ],
+      "breathing": "Breathe quietly and keep the exhale smooth so balance comes from steadiness, not tension.",
+      "warnings": "Practise near a wall if needed and avoid forcing the lifted leg higher than you can stabilise."
+    },
+    {
+      "name": "twists_and_revolves",
+      "poses": [
+        "Ardha Matsyendrasana",
+        "Marichyasana I",
+        "Marichyasana III",
+        "Parivrtta Parsvakonasana",
+        "Parivrtta Trikonasana"
+      ],
+      "summary": "A twisting posture that should begin with spinal length and only then move into rotation.",
+      "steps": [
+        "Set the feet or seat firmly so the pelvis has a stable base.",
+        "Inhale to lengthen the spine upward before beginning the twist.",
+        "Exhale to rotate from the ribs and upper spine while keeping the lower back long.",
+        "Stay broad across the chest and unwind slowly after several breaths."
+      ],
+      "alignment_tips": [
+        "Grow taller before trying to twist deeper.",
+        "Keep both sides of the waist long rather than crunching one side.",
+        "Anchor the base so the twist comes from the trunk instead of yanking with the arms.",
+        "If the breath feels blocked, reduce the depth."
+      ],
+      "benefits": [
+        "Improves spinal mobility",
+        "Builds trunk awareness",
+        "Encourages postural control"
+      ],
+      "breathing": "Use the inhale to create length and the exhale to refine rotation without force.",
+      "warnings": "Avoid cranking into the lower back. Keep the twist gentle if you have disc or SI joint issues."
+    },
+    {
+      "name": "forward_folds_openers",
+      "poses": [
+        "Agnistambhasana",
+        "Hanumanasana",
+        "Janu Sirsasana",
+        "Krounchasana",
+        "Kurmasana"
+      ],
+      "summary": "A deep fold or opener that asks for patience, support, and gradual length through the spine and hips.",
+      "steps": [
+        "Enter the pose slowly and elevate the hips or use props before chasing maximum depth.",
+        "Lengthen the spine first so the movement comes from the hips rather than collapsing the torso.",
+        "Keep the active leg or grounding points engaged to protect the joints.",
+        "Hold only where the breath stays calm and the stretch feels broad, not sharp."
+      ],
+      "alignment_tips": [
+        "Lead with a long spine rather than a rounded back.",
+        "Support tight hips or hamstrings with props and a smaller range.",
+        "Keep the knees and ankles comfortable instead of forcing them flat.",
+        "Let time and breath create depth."
+      ],
+      "benefits": [
+        "Opens hips and hamstrings",
+        "Encourages introspective focus",
+        "Improves posterior-chain awareness"
+      ],
+      "breathing": "Breathe into the back body and soften more on each exhale without collapsing.",
+      "warnings": "Back off immediately from any sharp sensation in the knees, hamstrings, or lower back."
+    },
+    {
+      "name": "backbends_heart_openers",
+      "poses": [
+        "Ardha Bhekasana",
+        "Bhekasana",
+        "Camatkarasana",
+        "Dhanurasana",
+        "Eka Pada Rajakapotasana II",
+        "Kapotasana",
+        "Natarajasana",
+        "Purvottanasana",
+        "Salabhasana",
+        "Salamba Bhujangasana",
+        "Urdhva Dhanurasana"
+      ],
+      "summary": "A heart-opening backbend that needs strong legs, active glutes, and length through the front body.",
+      "steps": [
+        "Set your legs, hands, or forearms first so the base can support the backbend.",
+        "Lift the chest and lengthen through the sternum before trying to go deeper.",
+        "Engage the legs and lower belly so the bend spreads through the whole spine.",
+        "Leave the pose before the lower back takes all the load."
+      ],
+      "alignment_tips": [
+        "Think of length first, depth second.",
+        "Keep the front ribs integrated so you do not hinge only at the lumbar spine.",
+        "Press through the legs to help the chest rise.",
+        "Broaden the collarbones and keep the throat spacious."
+      ],
+      "benefits": [
+        "Opens the chest and shoulders",
+        "Strengthens the back body",
+        "Builds energetic focus"
+      ],
+      "breathing": "Inhale to lift and widen the chest. Exhale to stabilise the core and avoid overreaching.",
+      "warnings": "Use moderation with sensitive lower backs, shoulders, or necks. Warm up thoroughly before advanced backbends."
+    },
+    {
+      "name": "inversions",
+      "poses": [
+        "Adho Mukha Vriksasana",
+        "Ardha Pincha Mayurasana",
+        "Dwi Pada Viparita Dandasana",
+        "Ganda Bherundasana",
+        "Salamba Sarvangasana",
+        "Salamba Sirsasana"
+      ],
+      "summary": "An inversion that demands shoulder stability, core control, and careful entry and exit.",
+      "steps": [
+        "Practise your setup first and only invert when the shoulders and trunk feel organised.",
+        "Move into the shape with a light, controlled lift rather than a hard kick or collapse.",
+        "Stack the major joints as much as your mobility allows and keep the core engaged.",
+        "Come down with control before balance or neck position starts to fail."
+      ],
+      "alignment_tips": [
+        "Press strongly through the forearms, shoulders, or hands depending on the pose.",
+        "Keep the neck neutral and avoid dumping weight into the cervical spine.",
+        "Use the ribs and pelvis to keep the midline organised.",
+        "Practise at a wall until the shape is truly stable."
+      ],
+      "benefits": [
+        "Builds shoulder and core strength",
+        "Improves concentration",
+        "Develops whole-body control"
+      ],
+      "breathing": "Keep the breath smooth and conservative. If the breath becomes strained, exit the pose.",
+      "warnings": "Avoid unsupported inversions if you have neck issues, uncontrolled blood pressure, or do not yet have a stable base."
+    },
+    {
+      "name": "arm_balances_core",
+      "poses": [
+        "Astavakrasana",
+        "Bakasana",
+        "Bhairavasana",
+        "Durvasasana",
+        "Eka Pada Koundinyanasana I",
+        "Eka Pada Koundinyanasana II",
+        "Lolasana",
+        "Mayurasana",
+        "Parsva Bakasana",
+        "Tulasana"
+      ],
+      "summary": "An arm balance that combines active hands, core engagement, and precise weight shift.",
+      "steps": [
+        "Warm the wrists, shoulders, and core before attempting the full shape.",
+        "Place the hands firmly and spread the fingers to create a broad, active base.",
+        "Shift weight gradually while drawing the lower belly in to keep the centre controlled.",
+        "Lift only as high as you can maintain clean alignment and a steady breath."
+      ],
+      "alignment_tips": [
+        "Look slightly forward instead of dropping the head.",
+        "Push the floor away so the shoulders stay active.",
+        "Keep the elbows tracking intelligently rather than collapsing outward.",
+        "Practise entry drills and toe taps before trying to hold the full pose."
+      ],
+      "benefits": [
+        "Builds upper-body strength",
+        "Sharpens concentration",
+        "Improves core coordination"
+      ],
+      "breathing": "Keep the breath short but smooth. Use each exhale to connect the ribs and lower belly.",
+      "warnings": "Practise carefully if you have wrist, elbow, or shoulder pain. Use props or regressions first."
+    }
+  ],
+  "exact": {
+    "Adho Mukha Svanasana": {
+      "summary": "A classic downward-facing pose that lengthens the spine, opens the shoulders, and lightly energises the whole body.",
+      "steps": [
+        "Start on hands and knees with hands shoulder-width apart and knees under hips.",
+        "Tuck the toes and lift the knees, sending the hips up and back.",
+        "Press the floor away, lengthen both sides of the waist, and keep a soft bend in the knees if needed.",
+        "Let the head hang naturally between the arms and stay for 5 to 8 smooth breaths."
+      ],
+      "alignment_tips": [
+        "Prioritise a long spine over straight legs.",
+        "Press through the index-finger base and thumb mound to protect the wrists.",
+        "Rotate the upper arms outward slightly so the shoulders feel broad.",
+        "Keep the ribs gently drawn in so the back does not sag."
+      ],
+      "benefits": [
+        "Lengthens the spine and hamstrings",
+        "Builds shoulder stability",
+        "Refreshes the mind"
+      ],
+      "common_mistakes": [
+        "Rounding the upper back instead of creating a long spine.",
+        "Putting all weight into the hands rather than pressing back through the hips.",
+        "Forcing the heels to the floor before the spine is long.",
+        "Dropping the head heavily — let it hang naturally between the arms."
+      ],
+      "breathing": "Inhale to create length from wrists to hips. Exhale to root the hands and settle the heels toward the floor.",
+      "warnings": "Keep the knees bent or elevate the hands if the hamstrings or shoulders feel overly tight."
+    },
+    "Ardha Chandrasana": {
+      "summary": "Half Moon Pose challenges balance while opening the chest and strengthening the standing leg.",
+      "steps": [
+        "Begin from Triangle or a short lunge with one hand on the floor or a block in front of the standing foot.",
+        "Shift weight into the front foot and lift the back leg until it reaches hip height.",
+        "Stack the top hip over the bottom hip and open the chest to the side.",
+        "Reach the top arm upward, keep the gaze steady, and hold for several breaths before lowering slowly."
+      ],
+      "alignment_tips": [
+        "Use a block so the side body can stay long.",
+        "Keep the standing knee softly engaged, not locked.",
+        "Flex the lifted foot and press through the heel.",
+        "Think of length in both directions instead of hanging into the lower hand."
+      ],
+      "benefits": [
+        "Improves balance",
+        "Strengthens hips and legs",
+        "Opens the chest and side body"
+      ],
+      "breathing": "Breathe slowly and let the exhale steady the standing leg and pelvis.",
+      "warnings": "Practise near a wall if balance is inconsistent or if you feel unstable in the standing ankle."
+    },
+    "Janu Sirsasana": {
+      "summary": "Head-to-Knee Forward Fold is a calming asymmetrical fold that opens the hamstrings, calves, and back body.",
+      "steps": [
+        "Sit with one leg extended and the other foot placed comfortably near the inner thigh.",
+        "Square the torso toward the straight leg and lift through the spine.",
+        "Hinge from the hips as you reach forward, keeping the chest broad.",
+        "Rest where the breath stays smooth and hold without pulling aggressively."
+      ],
+      "alignment_tips": [
+        "Sit on height if the pelvis rolls backward.",
+        "Lead with the sternum instead of the forehead.",
+        "Keep a slight bend in the straight knee if the hamstring is tight.",
+        "Avoid twisting away from the extended leg."
+      ],
+      "benefits": [
+        "Stretches the hamstrings",
+        "Calms the nervous system",
+        "Improves spinal awareness"
+      ],
+      "breathing": "Inhale to lengthen. Exhale to soften the torso forward without forcing the stretch.",
+      "warnings": "Back off if you feel pulling behind the knee or compression in the lower back."
+    },
+    "Savasana": {
+      "summary": "Final relaxation pose allows the nervous system to settle so the effects of practice can be absorbed.",
+      "steps": [
+        "Lie on your back with the legs comfortably apart and the arms resting slightly away from the body.",
+        "Support the knees, head, or neck if that helps the body fully relax.",
+        "Close the eyes and let the whole body release into the floor.",
+        "Stay still for several minutes and come out by deepening the breath before rolling to one side."
+      ],
+      "alignment_tips": [
+        "Position the shoulders so the chest feels open, not pinched.",
+        "Let the feet roll out naturally.",
+        "Use support under the knees if the lower back feels tense.",
+        "Keep the face and tongue soft."
+      ],
+      "benefits": [
+        "Deep relaxation",
+        "Improves recovery",
+        "Settles the mind"
+      ],
+      "breathing": "Allow the breath to become natural, quiet, and effortless. Observe rather than control it.",
+      "warnings": "If lying flat is uncomfortable, place support under the knees or choose a side-lying version."
+    },
+    "Sukhasana": {
+      "summary": "Easy Pose is a simple cross-legged seat for grounding, meditation, and breath awareness.",
+      "steps": [
+        "Sit on a folded blanket so the knees can relax downward more easily.",
+        "Cross the shins comfortably and place the hands on the thighs or knees.",
+        "Lift through the spine and soften the shoulders down the back.",
+        "Stay upright for several slow breaths and switch the cross of the legs over time."
+      ],
+      "alignment_tips": [
+        "Raise the seat until the spine can stay tall without strain.",
+        "Let the knees be supported if they float high.",
+        "Keep the chin level and the back of the neck long.",
+        "Avoid slumping or leaning back heavily."
+      ],
+      "benefits": [
+        "Supports meditation",
+        "Improves seated posture",
+        "Encourages calm breathing"
+      ],
+      "common_mistakes": [
+        "Slumping the lower back and collapsing the chest.",
+        "Forcing the knees down instead of supporting them with height under the hips.",
+        "Clenching the jaw or shoulders during the hold.",
+        "Keeping the same leg crossing every session — alternate regularly."
+      ],
+      "breathing": "Use slow nasal breathing and let the exhale soften the hips and groins.",
+      "warnings": "If the knees or hips feel strained, sit higher or choose another seated shape."
+    },
+    "Uttana Shishosana": {
+      "summary": "Extended Puppy Pose opens the chest, shoulders, and upper back while keeping the hips over the knees.",
+      "steps": [
+        "Start on hands and knees with hips stacked over the knees.",
+        "Walk the hands forward and melt the chest toward the floor.",
+        "Keep the hips above the knees as the arms lengthen forward.",
+        "Rest the forehead or chin only if the neck stays comfortable and breathe into the upper back."
+      ],
+      "alignment_tips": [
+        "Keep the lower ribs gently supported so the low back does not dump.",
+        "Press evenly through the palms and forearms of the hands.",
+        "Let the chest move forward rather than only downward.",
+        "Use a blanket under the knees for comfort."
+      ],
+      "benefits": [
+        "Opens shoulders and chest",
+        "Lengthens the spine",
+        "Relieves upper-back stiffness"
+      ],
+      "breathing": "Direct the inhale into the side ribs and upper back, then soften the sternum on the exhale.",
+      "warnings": "Come up slightly if the shoulders or neck feel pinched."
+    },
+    "Vajrasana": {
+      "summary": "Thunderbolt Pose is a kneeling seat often used for breathing practice, digestion support, and quiet focus.",
+      "steps": [
+        "Kneel with the shins on the floor and sit the hips back toward the heels.",
+        "Place the hands on the thighs and lengthen the spine upward.",
+        "Keep the chest relaxed and the shoulders soft while the pelvis feels heavy.",
+        "Stay for calm breaths, then come out slowly if the feet or knees need relief."
+      ],
+      "alignment_tips": [
+        "Place a block or cushion between the heels and hips if needed.",
+        "Keep the ankles long and the toes pointing back comfortably.",
+        "Draw the lower ribs in lightly to avoid overarching the low back.",
+        "Balance weight evenly over both shins."
+      ],
+      "benefits": [
+        "Encourages calm focus",
+        "Supports upright posture",
+        "Improves awareness of breath"
+      ],
+      "breathing": "Breathe softly through the nose and let the exhale settle the thighs and pelvis.",
+      "warnings": "Use support or shorten the hold if the knees, ankles, or tops of the feet feel strained."
+    },
+    "Virabhadrasana I": {
+      "summary": "Warrior I builds grounded strength through the legs while opening the front body and lifting the chest.",
+      "steps": [
+        "From a staggered stance, turn the back foot slightly outward and bend the front knee.",
+        "Square the torso toward the front as much as your hips comfortably allow.",
+        "Lift the arms overhead while lengthening through both sides of the waist.",
+        "Press firmly through both feet and hold with steady breath."
+      ],
+      "alignment_tips": [
+        "Track the front knee toward the second toe.",
+        "Keep the back heel rooted or narrow the stance if balance is difficult.",
+        "Draw the front ribs in so the lower back stays long.",
+        "Relax the shoulders away from the ears."
+      ],
+      "benefits": [
+        "Strengthens legs and glutes",
+        "Opens the hips and chest",
+        "Builds confidence and stamina"
+      ],
+      "breathing": "Inhale to lift the torso and arms. Exhale to root through both feet and stabilise the pelvis.",
+      "warnings": "Shorten the stance if the lower back or front knee feels overloaded."
+    },
+    "Virabhadrasana II": {
+      "summary": "Warrior II strengthens the legs and hips while teaching broad, stable expansion through the arms and chest.",
+      "steps": [
+        "Step the feet wide and turn the front foot out with the back foot angled slightly in.",
+        "Bend the front knee until it stacks over the ankle while keeping the back leg strong.",
+        "Extend the arms out at shoulder height and broaden across the collarbones.",
+        "Gaze over the front fingertips and hold with a steady, even breath."
+      ],
+      "alignment_tips": [
+        "Keep the front knee tracking over the toes.",
+        "Anchor the outer edge of the back foot.",
+        "Stack the shoulders over the pelvis instead of leaning forward.",
+        "Soften the neck and jaw."
+      ],
+      "benefits": [
+        "Builds leg endurance",
+        "Strengthens hips",
+        "Improves focus and posture"
+      ],
+      "breathing": "Inhale to widen through the arms. Exhale to deepen your root through both feet.",
+      "warnings": "Reduce the depth if the front knee or inner groin feels strained."
+    },
+    "Virabhadrasana III": {
+      "summary": "Warrior III is a strong balance that links leg power, hip control, and long spinal alignment.",
+      "steps": [
+        "Begin from a lunge or Warrior I and shift your weight into the front foot.",
+        "Lift the back leg as the torso tips forward until both move toward one long line.",
+        "Reach through the crown of the head and the lifted heel.",
+        "Keep the standing leg steady and hold only as long as the hips stay level."
+      ],
+      "alignment_tips": [
+        "Square the lifted hip down rather than opening it to the side.",
+        "Keep the standing knee softly engaged.",
+        "Draw the lower belly in to support balance.",
+        "Use fingertips on a wall or block if needed."
+      ],
+      "benefits": [
+        "Improves balance",
+        "Strengthens legs and core",
+        "Builds full-body coordination"
+      ],
+      "breathing": "Keep the breath light and steady so balance stays organised rather than rigid.",
+      "warnings": "Use support if you feel unstable or if the standing hamstring is overworking."
+    },
+    "Vriksasana": {
+      "summary": "Tree Pose is a grounding balance posture that trains single-leg stability, a tall spine, and quiet focused attention.",
+      "steps": [
+        "Stand tall in Mountain Pose and shift your weight evenly into the right foot.",
+        "Lift the left foot and place the sole against the inner thigh or calf — never against the knee joint.",
+        "Bring the palms together at the chest or raise the arms overhead with relaxed shoulders.",
+        "Fix your gaze on one still point, breathe steadily, then switch sides."
+      ],
+      "alignment_tips": [
+        "Press the standing foot evenly and actively into the floor.",
+        "Keep the standing knee softly engaged rather than locked.",
+        "Draw the tailbone gently down so the lower back stays long.",
+        "Relax the shoulders away from the ears and keep the chin level."
+      ],
+      "common_mistakes": [
+        "Placing the lifted foot against the knee — always use the calf or inner thigh.",
+        "Leaning the torso away from the standing side.",
+        "Gripping the face and jaw instead of staying mentally calm.",
+        "Over-arching the lower back by lifting the ribs away from the pelvis."
+      ],
+      "benefits": [
+        "Improves balance and concentration",
+        "Strengthens the standing leg",
+        "Opens the hip of the lifted leg"
+      ],
+      "breathing": "Breathe quietly through the nose. Let the exhale deepen your root down through the standing foot.",
+      "warnings": "Use a wall for support if balance is inconsistent, or keep the raised foot lower on the calf."
+    }
+  }
+}

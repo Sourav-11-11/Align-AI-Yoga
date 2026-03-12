@@ -1,73 +1,205 @@
-{% extends 'index.html' %}
+﻿{% extends 'index.html' %}
+{% block title %}Recommended Poses — Align AI Yoga{% endblock %}
 
 {% block navbar %}
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{url_for('home')}}" style="color: white;">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('yoga1')}}" style="color: yellow; padding-left: 30px;">Yoga</a>
-        </li>
-        <li class="nav-item">
-         <a class="nav-link" href="{{url_for('chatbot')}}" style="color: white; padding-left: 30px;">chatbot</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('dashboard')}}" style="color: white; padding-left: 30px;">Dashboard</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('index')}}" style="color: white; padding-left: 30px;">Logout</a>
-        </li>
-    </ul>
+  <ul class="navbar-nav ms-auto align-items-lg-center">
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.home') }}">Home</a></li>
+    <li class="nav-item"><a class="nav-link nav-text nav-active" href="{{ url_for('yoga.yoga1') }}">Yoga</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.analyze') }}">Analyze</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.chatbot') }}">Chatbot</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.logout') }}">Logout</a></li>
+  </ul>
 {% endblock %}
 
-
 {% block content %}
-    <div style="min-height: 800px; background-color: rgba(0, 0, 0, 0.797);">
-        <div class="container-fluid">
-            <div class="contact_section_2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <center>
-                            <form action="{{url_for('yoga2')}}" method="post" enctype="multipart/form-data" style="background-color: rgba(255, 255, 255, 0.575); width: fit-content; height: fit-content; border-radius: 10px;">
-                                <div class="col-11" style="padding-top: 20px; padding-bottom: 20px;">
-                                    
-                                    <h1 class="contact_taital" style="color: rgba(0, 0, 0, 0.849);">Recommended Yoga Poses for <b style="color: green;">{{mood}}</b></h1>
+<div class="page-overlay page-overlay--top">
+  <div class="container" style="max-width:1100px; padding-bottom:4rem;">
 
-                                    <div class="container">
-                                        <div class="row">
-                                          {% for img,folder_name in files %}
-                                          <div class="col-md-4">
-                                            <div class="card h-100">
-                                              <img src="{{img}}" alt="{{folder_name}}" style="height: 200px" />
-                                              <div class="card-footer">
-                                                <div class="card-text text-center h5">{{folder_name}}</div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          {% endfor %}
-                                        </div>
-                                      </div>
+    <!-- Header -->
+    <div class="text-center mb-5" style="padding-top:2.5rem;">
+      <p class="hero-eyebrow">Mood-Based Recommendation</p>
+      <h2 class="session-page-title">Poses for <span style="color:var(--b300);">{{ mood }}</span></h2>
+      <p class="session-page-sub">Click any pose to read full step-by-step instructions, alignment tips, and then analyse your posture with the AI camera.</p>
+      <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+        <button type="button" class="btn-beige-outline" onclick="refreshPoses()" style="font-size:0.85rem;">
+          Shuffle These Poses
+        </button>
+        <a href="{{ url_for('yoga.yoga1') }}" class="btn-beige-outline" style="font-size:0.85rem;">
+          Choose a Different Mood
+        </a>
+      </div>
+    </div>
 
-                                    <label for="img" class="mail_text">Upload your yoga pose image here!</label>
-                                    <input type="file" accept=".jpg,.png,.jpeg,.jfif" id="img" name="img" class="mail_text" required>
-
-                                    <select class="mail_text" name="pose_name" required>
-                                        <option value="">Select your yoga name which you are going to upload as image</option>
-                                        {% for img,folder_name in files %}
-                                            <option value="{{folder_name}}">{{folder_name}}</option>
-                                        {% endfor %}
-                                      </select>
-
-                                    <input hidden name="mood" value="{{mood}}">
-
-                                    <button type="submit" class="btn btn-info" style="margin-top: 20px; width: 30%;">Submit</button><br><br>
-                                </div>
-                            </form>
-                        </center>
-                        
-                    </div>
-                </div>
+    <!-- Pose cards -->
+    <div class="row g-4 mb-5">
+      {% for item in items %}
+      <div class="col-md-4">
+        <div class="pose-session-card" onclick="openPoseModal({{ loop.index0 }})" role="button" tabindex="0"
+             onkeydown="if(event.key==='Enter')openPoseModal({{ loop.index0 }})">
+          <div class="pose-session-card-img-wrap">
+            <img src="{{ item.image_url }}" alt="{{ item.pose_name }}" loading="lazy">
+            <div class="pose-session-card-overlay">
+              <span>View Details &amp; Analyse &#8594;</span>
             </div>
+          </div>
+          <div class="pose-session-card-body">
+            <div class="pose-session-card-name">{{ item.pose_name }}</div>
+            <p class="pose-session-card-desc">{{ item.guide.summary[:115] }}&#8230;</p>
+            <div class="pose-session-steps-preview">
+              {% for step in item.guide.steps[:2] %}
+                <div class="pose-session-step-row">
+                  <span class="pose-session-step-num">{{ loop.index }}</span>
+                  <span>{{ step[:72] }}{% if step|length > 72 %}&#8230;{% endif %}</span>
+                </div>
+              {% endfor %}
+            </div>
+            <div class="pose-session-card-cta">View Full Guide &amp; Analyse &#8594;</div>
+          </div>
         </div>
-    </div
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Hint nudge -->
+    <div class="text-center">
+      <p style="color:rgba(245,237,214,0.5); font-size:0.85rem;">Click a pose above to see the full guide, then use the <strong style="color:var(--b200);">Analyse</strong> button to check your form.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Pose Detail Modal (same pattern as session page) -->
+<div class="pose-modal-overlay" id="poseModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="pose-modal-inner">
+    <button class="pose-modal-close" onclick="closePoseModal()" aria-label="Close">&#x2715;</button>
+    <div class="pose-modal-grid">
+
+      <div class="pose-modal-img-col">
+        <img id="modalImg" src="" alt="" class="pose-modal-img">
+      </div>
+
+      <div class="pose-modal-info-col">
+        <p class="pose-guide-kicker" id="modalKicker">Recommended for {{ mood }}</p>
+        <h2 class="pose-modal-title" id="modalTitle"></h2>
+        <p class="pose-guide-summary" id="modalSummary"></p>
+
+        <div class="pose-modal-block">
+          <div class="pose-guide-block-title">Step-by-Step Instructions</div>
+          <ol class="pose-guide-list pose-guide-list--ordered" id="modalSteps"></ol>
+        </div>
+
+        <div class="pose-modal-block">
+          <div class="pose-guide-block-title">Alignment Tips</div>
+          <ul class="pose-guide-list pose-guide-list--plain" id="modalTips"></ul>
+        </div>
+
+        <div class="pose-modal-block" id="modalMistakesBlock">
+          <div class="pose-guide-block-title">Common Mistakes to Avoid</div>
+          <ul class="pose-guide-list pose-guide-list--plain pose-guide-list--mistakes" id="modalMistakes"></ul>
+        </div>
+
+        <div class="pose-modal-block">
+          <div class="pose-guide-block-title">Benefits</div>
+          <div class="pose-guide-benefits" id="modalBenefits"></div>
+        </div>
+
+        <div class="pose-guide-note mt-3" id="modalBreathing" style="display:none;"></div>
+        <div class="pose-guide-warning mt-3" id="modalWarning" style="display:none;"></div>
+
+        <div class="pose-modal-actions">
+          <a id="modalAnalyzeBtn" href="#" class="btn-beige">Analyse My Pose</a>
+          <button onclick="closePoseModal()" class="btn-beige-outline">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const _POSE_DATA = {{ items | tojson }};
+const _ANALYZE_BASE = "{{ url_for('yoga.analyze') }}";
+const _CURRENT_MOOD = {{ mood | tojson }};
+const _YOGA1_URL = "{{ url_for('yoga.yoga1') }}";
+
+function openPoseModal(idx) {
+  const item = _POSE_DATA[idx];
+  if (!item) return;
+  const g = item.guide || {};
+
+  document.getElementById('modalImg').src = item.image_url;
+  document.getElementById('modalImg').alt = item.pose_name;
+  document.getElementById('modalKicker').textContent = 'Recommended for ' + _CURRENT_MOOD;
+  document.getElementById('modalTitle').textContent = item.pose_name;
+  document.getElementById('modalSummary').textContent = g.summary || '';
+
+  _fillList('modalSteps', g.steps || []);
+  _fillList('modalTips', g.alignment_tips || []);
+
+  const mistakes = g.common_mistakes || [];
+  document.getElementById('modalMistakesBlock').style.display = mistakes.length ? '' : 'none';
+  _fillList('modalMistakes', mistakes);
+
+  const benefitsEl = document.getElementById('modalBenefits');
+  benefitsEl.innerHTML = '';
+  (g.benefits || []).forEach(b => {
+    const chip = document.createElement('span');
+    chip.className = 'pose-guide-chip';
+    chip.textContent = b;
+    benefitsEl.appendChild(chip);
+  });
+
+  _setNote('modalBreathing', g.breathing ? '<strong>Breathing:</strong> ' + g.breathing : '');
+  _setNote('modalWarning', g.warnings ? '<strong>Safety:</strong> ' + g.warnings : '');
+
+  document.getElementById('modalAnalyzeBtn').href =
+    _ANALYZE_BASE + '?pose=' + encodeURIComponent(item.pose_name);
+
+  document.getElementById('poseModal').classList.add('is-open');
+  document.body.classList.add('modal-open-lock');
+}
+
+function closePoseModal() {
+  document.getElementById('poseModal').classList.remove('is-open');
+  document.body.classList.remove('modal-open-lock');
+}
+
+function _fillList(elId, arr) {
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
+  arr.forEach(text => {
+    const li = document.createElement('li');
+    li.textContent = text;
+    el.appendChild(li);
+  });
+}
+
+function _setNote(elId, html) {
+  const el = document.getElementById(elId);
+  if (html) { el.innerHTML = html; el.style.display = ''; }
+  else { el.style.display = 'none'; }
+}
+
+function refreshPoses() {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = _YOGA1_URL;
+  const inp = document.createElement('input');
+  inp.type = 'hidden';
+  inp.name = 'mood';
+  inp.value = _CURRENT_MOOD;
+  form.appendChild(inp);
+  document.body.appendChild(form);
+  form.submit();
+}
+
+document.getElementById('poseModal').addEventListener('click', function(e) {
+  if (e.target === this) closePoseModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closePoseModal();
+});
+</script>
 {% endblock %}

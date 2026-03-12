@@ -1,69 +1,213 @@
-{% extends 'index.html' %}
+﻿{% extends 'index.html' %}
+{% block title %}Yoga Session — Align AI Yoga{% endblock %}
 
 {% block navbar %}
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{url_for('home')}}" style="color: white;">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('yoga1')}}" style="color: yellow; padding-left: 30px;">Yoga</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('chatbot')}}" style="color: white; padding-left: 30px;">chatbot</a>
-           </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('dashboard')}}" style="color: white; padding-left: 30px;">Dashboard</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('index')}}" style="color: white; padding-left: 30px;">Logout</a>
-        </li>
-    </ul>
+  <ul class="navbar-nav ms-auto align-items-lg-center">
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.home') }}">Home</a></li>
+    <li class="nav-item"><a class="nav-link nav-text nav-active" href="{{ url_for('yoga.yoga1') }}">Yoga</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.analyze') }}">Analyze</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.chatbot') }}">Chatbot</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.logout') }}">Logout</a></li>
+  </ul>
 {% endblock %}
 
-
 {% block content %}
-    <div style="min-height: 650px; background-color: rgba(0, 0, 0, 0.797);">
-        <div class="container-fluid">
-            <div class="contact_section_2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <center>
-                            <form action="{{url_for('yoga1')}}" method="post" style="background-color: rgba(255, 255, 255, 0.575); width: 600px; border-radius: 10px;">
-                                <div class="col-11" style="padding-top: 20px; padding-bottom: 20px;">
-                                    
-                                    <h1 class="contact_taital" style="color: rgba(0, 0, 0, 0.849);">Select Current Mood</h1>
+<div class="page-overlay page-overlay--top">
+  <div class="container" style="max-width:1140px; padding-bottom:4rem;">
 
-                                    <select name="mood" class="mail_text" required>
-                                        <option value="">Choose your current mood</option>
-                                        <option value="Calm">Calm</option>
-                                        <option value="Addiction">Addiction</option>
-                                        <option value="Energetic">Energetic</option>
-                                        <option value="Sadness">Sadness</option>
-                                        <option value="Difficulty Sleeping">Difficulty Sleeping</option>
-                                        <option value="Stress">Stress</option>
-                                        <option value="Jealousy">Jealousy</option>
-                                        <option value="Fear">Fear</option>
-                                        <option value="Grief">Grief</option>
-                                        <option value="Overwhelmed">Overwhelmed</option>
-                                        <option value="Frustration">Frustration</option>
-                                        <option value="Anxious">Anxious</option>
-                                        <option value="Excited">Excited</option>
-                                        <option value="Loneliness">Loneliness</option>
-                                        <option value="Pressure">Pressure</option>
-                                        <option value="Gratitude">Gratitude</option>
-                                        <option value="Angry">Angry</option>
-                                        <option value="Depression">Depression</option>
-                                        <option value="Contentment">Contentment</option>
-                                    </select>
-
-                                    <button type="submit" class="btn btn-info" style="margin-top: 20px; width: 30%;">Submit</button><br><br>
-                                </div>
-                            </form>
-                        </center>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Page header -->
+    <div class="text-center mb-5" style="padding-top:2.5rem;">
+      <p class="hero-eyebrow">Your Practice</p>
+      <h1 class="session-page-title">Start Your Yoga Session</h1>
+      <p class="session-page-sub">Begin with beginner-friendly poses, then discover personalised recommendations based on how you feel today.</p>
     </div>
+
+    <!-- Step 1: Beginner Poses -->
+    <section class="session-section">
+      <div class="session-step-header">
+        <span class="session-step-badge">Step 1</span>
+        <h2 class="session-step-title">Beginner Poses to Start With</h2>
+        <p class="session-step-sub">New to yoga? These three gentle poses are a perfect entry point. Click any card to view full instructions and then analyse your form with the AI camera.</p>
+      </div>
+
+      <div class="row g-4 mt-2">
+        {% for item in beginner_items %}
+        <div class="col-md-4">
+          <div class="pose-session-card" onclick="openPoseModal({{ loop.index0 }})" role="button" tabindex="0"
+               onkeydown="if(event.key==='Enter')openPoseModal({{ loop.index0 }})">
+            <div class="pose-session-card-img-wrap">
+              <img src="{{ item.image_url }}" alt="{{ item.pose_name }}" loading="lazy">
+              <div class="pose-session-card-overlay">
+                <span>View Steps &amp; Analyse &#8594;</span>
+              </div>
+            </div>
+            <div class="pose-session-card-body">
+              <div class="pose-session-card-name">{{ item.pose_name }}</div>
+              <p class="pose-session-card-desc">{{ item.guide.summary[:115] }}&#8230;</p>
+              <div class="pose-session-steps-preview">
+                {% for step in item.guide.steps[:2] %}
+                  <div class="pose-session-step-row">
+                    <span class="pose-session-step-num">{{ loop.index }}</span>
+                    <span>{{ step[:72] }}{% if step|length > 72 %}&#8230;{% endif %}</span>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="pose-session-card-cta">View Details &amp; Analyse &#8594;</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Step 2: Mood-Based Yoga -->
+    <section class="session-section">
+      <div class="session-step-header">
+        <span class="session-step-badge">Step 2</span>
+        <h2 class="session-step-title">Find Yoga Based on Your Mood</h2>
+        <p class="session-step-sub">Tell us how you are feeling today and our AI will recommend three poses tailored specifically to your current state of mind and body.</p>
+      </div>
+
+      <div class="mood-form-card mt-3">
+        <p class="mood-form-label">How are you feeling right now?</p>
+        <form action="{{ url_for('yoga.yoga1') }}" method="post" id="moodForm">
+          <div class="mood-grid" id="moodGrid">
+            {% for mood in moods %}
+            <label class="mood-option">
+              <input type="radio" name="mood" value="{{ mood }}" required>
+              <span class="mood-option-inner">{{ mood }}</span>
+            </label>
+            {% endfor %}
+          </div>
+          <div class="text-center mt-4">
+            <button type="submit" class="btn-beige" style="padding:0.8rem 2.8rem; font-size:1rem;">
+              Get My Recommendations
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- Pose Detail Modal -->
+<div class="pose-modal-overlay" id="poseModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="pose-modal-inner">
+    <button class="pose-modal-close" onclick="closePoseModal()" aria-label="Close">&#x2715;</button>
+    <div class="pose-modal-grid">
+
+      <div class="pose-modal-img-col">
+        <img id="modalImg" src="" alt="" class="pose-modal-img">
+      </div>
+
+      <div class="pose-modal-info-col">
+        <p class="pose-guide-kicker" id="modalKicker">Beginner pose</p>
+        <h2 class="pose-modal-title" id="modalTitle"></h2>
+        <p class="pose-guide-summary" id="modalSummary"></p>
+
+        <div class="pose-modal-block">
+          <div class="pose-guide-block-title">Step-by-Step Instructions</div>
+          <ol class="pose-guide-list pose-guide-list--ordered" id="modalSteps"></ol>
+        </div>
+
+        <div class="pose-modal-block">
+          <div class="pose-guide-block-title">Alignment Tips</div>
+          <ul class="pose-guide-list pose-guide-list--plain" id="modalTips"></ul>
+        </div>
+
+        <div class="pose-modal-block" id="modalMistakesBlock">
+          <div class="pose-guide-block-title">Common Mistakes to Avoid</div>
+          <ul class="pose-guide-list pose-guide-list--plain pose-guide-list--mistakes" id="modalMistakes"></ul>
+        </div>
+
+        <div class="pose-modal-block">
+          <div class="pose-guide-block-title">Benefits</div>
+          <div class="pose-guide-benefits" id="modalBenefits"></div>
+        </div>
+
+        <div class="pose-guide-note mt-3" id="modalBreathing" style="display:none;"></div>
+        <div class="pose-guide-warning mt-3" id="modalWarning" style="display:none;"></div>
+
+        <div class="pose-modal-actions">
+          <a id="modalAnalyzeBtn" href="#" class="btn-beige">Analyse My Pose</a>
+          <button onclick="closePoseModal()" class="btn-beige-outline">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const _POSE_DATA = {{ beginner_items | tojson }};
+const _ANALYZE_BASE = "{{ url_for('yoga.analyze') }}";
+
+function openPoseModal(idx) {
+  const item = _POSE_DATA[idx];
+  if (!item) return;
+  const g = item.guide || {};
+
+  document.getElementById('modalImg').src = item.image_url;
+  document.getElementById('modalImg').alt = item.pose_name;
+  document.getElementById('modalKicker').textContent = 'Beginner pose';
+  document.getElementById('modalTitle').textContent = item.pose_name;
+  document.getElementById('modalSummary').textContent = g.summary || '';
+
+  _fillList('modalSteps', g.steps || [], true);
+  _fillList('modalTips', g.alignment_tips || [], false);
+
+  const mistakes = g.common_mistakes || [];
+  document.getElementById('modalMistakesBlock').style.display = mistakes.length ? '' : 'none';
+  _fillList('modalMistakes', mistakes, false);
+
+  const benefitsEl = document.getElementById('modalBenefits');
+  benefitsEl.innerHTML = '';
+  (g.benefits || []).forEach(b => {
+    const chip = document.createElement('span');
+    chip.className = 'pose-guide-chip';
+    chip.textContent = b;
+    benefitsEl.appendChild(chip);
+  });
+
+  _setNote('modalBreathing', g.breathing ? '<strong>Breathing:</strong> ' + g.breathing : '');
+  _setNote('modalWarning', g.warnings ? '<strong>Safety:</strong> ' + g.warnings : '');
+
+  document.getElementById('modalAnalyzeBtn').href =
+    _ANALYZE_BASE + '?pose=' + encodeURIComponent(item.pose_name);
+
+  document.getElementById('poseModal').classList.add('is-open');
+  document.body.classList.add('modal-open-lock');
+}
+
+function closePoseModal() {
+  document.getElementById('poseModal').classList.remove('is-open');
+  document.body.classList.remove('modal-open-lock');
+}
+
+function _fillList(elId, arr, ordered) {
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
+  arr.forEach(text => {
+    const li = document.createElement('li');
+    li.textContent = text;
+    el.appendChild(li);
+  });
+}
+
+function _setNote(elId, html) {
+  const el = document.getElementById(elId);
+  if (html) { el.innerHTML = html; el.style.display = ''; }
+  else { el.style.display = 'none'; }
+}
+
+document.getElementById('poseModal').addEventListener('click', function(e) {
+  if (e.target === this) closePoseModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closePoseModal();
+});
+</script>
 {% endblock %}

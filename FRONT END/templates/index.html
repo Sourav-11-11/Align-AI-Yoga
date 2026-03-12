@@ -1,114 +1,237 @@
-<!DOCTYPE html>
-<html>
-   <head>
-      <!-- basic -->
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <!-- mobile metas -->
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-      <!-- site metas -->
-      <title>Align AI Yoga</title>
-      <meta name="keywords" content="Yoga">
-      <meta name="description" content="A website for Yoga analysis">
-      <meta name="author" content="Sourav & Kiranmai">
-      <!-- bootstrap css -->
-      <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
-      <!-- style css -->
-      <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-      <!-- Responsive-->
-      <link rel="stylesheet" href="/static/css/responsive.css">
-      <!-- fevicon -->
-      <link rel="icon" href="/static/images/fevicon.png" type="image/gif" />
-      <!-- font css -->
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-      <!-- Scrollbar Custom CSS -->
-      <link rel="stylesheet" href="/static/css/jquery.mCustomScrollbar.min.css">
-      <!-- Tweaks for older IEs-->
-      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-   </head>
-   <body>
-      <div class="header_section" style="min-height: 650px; height: auto;">
-         <div class="container-fluid" style="background-color: rgba(0, 0, 0, 0.825);">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-               <a class="navbar-brand" href="#">
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Align AI Yoga{% endblock %}</title>
+  <meta name="description" content="AI-powered yoga pose correction and recommendation system">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
 
-               </a>
-               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-               <span class="navbar-toggler-icon"></span>
-               </button>
-               <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  {% block navbar %}
-                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active">
-                           <a class="nav-link" href="{{url_for('index')}}" style="color: yellow;">Home</a>
-                        </li>
-                        <li class="nav-item active">
-                           <a class="nav-link" href="{{ url_for('about') }}" style="color: white; padding-left: 40px;">About</a>
-                        </li>
-                        <li class="nav-item">
-                           <a class="nav-link" href="{{url_for('register')}}" style="color: white; padding-left: 40px;">Register</a>
-                       </li>
-                       <li class="nav-item">
-                           <a class="nav-link" href="{{url_for('login')}}" style="color: white; padding-left: 40px;">LogIn</a>
-                        </li>
-                        <li class="nav-item">
-                           <a class="nav-link" href="{{url_for('chatbot')}}" style="color: white; padding-left: 40px;">Chatbot</a>
-                        </li>
-                     </ul>
-                  {% endblock %}
-               </div>
-            </nav>
-         </div>
+<div class="header_section">
 
-         <!-- banner section start --> 
-         {% block content %}
-            <div class="banner_section layout_padding" style="display: flex; align-items: center; justify-content: center; height: 100vh; background-color: rgba(0, 0, 0, 0.797);">
-               <div class="container">
-                  <div id="banner_slider" class="carousel slide" data-ride="carousel">
-                     <div class="carousel-inner">
-                        <div class="carousel-item active">
-                           <div class="row justify-content-center">
-                              <div class="banner_taital_main text-center" style="margin-top: -110px;">
-                                 
-                                 <h1 class="banner_taital" style="color: white;">ALIGN AI YOGA</h1>
-                                 <h5 class="tasty_text">Interactive web application for Yoga Pose Analysis</h5>
-                                 <p class="banner_text" style="color: white;">
-                                    "Align your Breath, Align your mind and Align your Life"
-                                 </p>
-
-                                 <div class="btn_main" style="display: flex; justify-content: center; gap: 20px;">
-                                    <div class="about_bt"><a href="{{url_for('register')}}">Register</a></div>
-                                    <div class="callnow_bt active"><a href="{{url_for('login')}}">Login</a></div>
-                                 </div>
-                                 
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         {% endblock %}
-         <!-- banner section end -->
+  <!-- ── Flash messages (fixed, above everything) ──────────────── -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-wrap">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show mb-2" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
       </div>
-      <!-- header section end -->
-      
-      {% if message %}
-         <script>
-            alert("{{message}}")
-         </script>
-      {% endif %}
-      
-      <!-- Javascript files-->
-      <script src="/static/js/jquery.min.js"></script>
-      <script src="/static/js/popper.min.js"></script>
-      <script src="/static/js/bootstrap.bundle.min.js"></script>
-      <script src="/static/js/jquery-3.0.0.min.js"></script>
-      <script src="/static/js/plugin.js"></script>
-      <!-- sidebar -->
-      <script src="/static/js/jquery.mCustomScrollbar.concat.min.js"></script>
-      <script src="/static/js/custom.js"></script>
-   </body>
+    {% endif %}
+  {% endwith %}
+
+  <!-- ── Navbar ────────────────────────────────────────────────── -->
+  <nav class="navbar navbar-expand-lg site-navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('auth.index') }}">🧘 Align AI</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarMain" aria-controls="navbarMain"
+              aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarMain">
+        {% block navbar %}
+          <ul class="navbar-nav ms-auto align-items-lg-center">
+            <li class="nav-item"><a class="nav-link nav-text nav-active" href="{{ url_for('auth.index') }}">Home</a></li>
+            <li class="nav-sep-line"></li>
+            <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.login') }}">Login</a></li>
+            <li class="nav-sep-line"></li>
+            <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.register') }}">Register</a></li>
+          </ul>
+        {% endblock %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Page content ──────────────────────────────────────────── -->
+  {% block content %}
+    <!-- ── Hero ── -->
+    <div class="page-overlay">
+      <div class="container text-center" style="max-width:700px;">
+        <p class="hero-eyebrow">AI-Powered Wellness</p>
+        <h1 class="hero-title">Align AI Yoga</h1>
+        <div class="hero-divider"></div>
+        <p class="hero-sub">Intelligent pose correction &amp; personalised yoga recommendations &mdash; powered by computer vision AI</p>
+        <p class="hero-quote">&ldquo;Align your Breath, Align your Mind and Align your Life&rdquo;</p>
+        <div class="d-flex justify-content-center flex-wrap" style="gap:1.25rem; margin-top:2rem;">
+          <a href="{{ url_for('auth.register') }}" class="btn-beige">Get Started Free</a>
+          <a href="{{ url_for('auth.login') }}" class="btn-beige-outline">Sign In</a>
+        </div>
+      </div>
+      <div class="scroll-hint"><span>&#8595;</span><small>scroll to explore</small></div>
+    </div>
+
+    <!-- ── Benefits of Yoga ── -->
+    <section class="lp-section">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p class="lp-eyebrow">Why Practice Yoga?</p>
+          <h2 class="lp-title">Transform Your Mind &amp; Body</h2>
+          <div class="lp-divider mx-auto"></div>
+          <p class="lp-sub mx-auto" style="max-width:580px;">Yoga is more than stretching &mdash; it is a science of movement, breath, and mindfulness that rewires how you think, feel and exist in your body.</p>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="benefit-card">
+              <span class="benefit-ico">&#128170;</span>
+              <div class="benefit-title">Strength &amp; Flexibility</div>
+              <p class="benefit-text">Build lean muscle and increase full-body range of motion through progressive, mindful movement sequences.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="benefit-card">
+              <span class="benefit-ico">&#129504;</span>
+              <div class="benefit-title">Mental Clarity &amp; Focus</div>
+              <p class="benefit-text">Quiet mental noise, sharpen concentration and foster creativity through intentional breathwork and movement.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="benefit-card">
+              <span class="benefit-ico">&#127807;</span>
+              <div class="benefit-title">Stress Relief &amp; Calm</div>
+              <p class="benefit-text">Activate your parasympathetic nervous system, lower cortisol, and cultivate lasting calm in your daily life.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="benefit-card">
+              <span class="benefit-ico">&#9878;&#65039;</span>
+              <div class="benefit-title">Balance &amp; Coordination</div>
+              <p class="benefit-text">Develop proprioception and body awareness that enhances athletic performance and everyday stability.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="benefit-card">
+              <span class="benefit-ico">&#127782;</span>
+              <div class="benefit-title">Deeper Breathing</div>
+              <p class="benefit-text">Expand lung capacity and oxygenate every cell through pranayama &mdash; the ancient science of breath control.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="benefit-card">
+              <span class="benefit-ico">&#10024;</span>
+              <div class="benefit-title">Inner Peace</div>
+              <p class="benefit-text">Reconnect with yourself, build emotional resilience, and find stillness amid the rush of modern life.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Why Alignment Matters ── -->
+    <section class="lp-section lp-section--alt">
+      <div class="container">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-5">
+            <p class="lp-eyebrow">Alignment Science</p>
+            <h2 class="lp-title">Why Correct Posture Changes Everything</h2>
+            <div class="lp-divider"></div>
+            <p class="lp-sub">Most practitioners never reach their full potential because nobody corrects their form. Misalignment reduces effectiveness and causes chronic injury. Precision is everything.</p>
+          </div>
+          <div class="col-lg-7">
+            <div class="posture-block">
+              <span class="posture-ico">&#128737;&#65039;</span>
+              <div>
+                <div class="benefit-title">Injury Prevention</div>
+                <p class="step-text">Improper form places dangerous stress on joints, ligaments and the spine. Correct alignment distributes load safely, protecting your body over a lifetime of practice.</p>
+              </div>
+            </div>
+            <div class="posture-block">
+              <span class="posture-ico">&#9889;</span>
+              <div>
+                <div class="benefit-title">Maximum Effectiveness</div>
+                <p class="step-text">When properly aligned, muscles activate as intended &mdash; giving you 100% of each pose&rsquo;s benefits rather than compensating with the wrong muscle groups.</p>
+              </div>
+            </div>
+            <div class="posture-block">
+              <span class="posture-ico">&#128200;</span>
+              <div>
+                <div class="benefit-title">Faster Progress</div>
+                <p class="step-text">Practitioners who prioritise form over completion progress significantly faster and safely unlock advanced poses months ahead of schedule.</p>
+              </div>
+            </div>
+            <div class="posture-block">
+              <span class="posture-ico">&#129488;</span>
+              <div>
+                <div class="benefit-title">Mind-Body Connection</div>
+                <p class="step-text">Precise alignment deepens the meditative quality of yoga, intensifying body awareness and uniting movement with consciousness.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How Align AI Works ── -->
+    <section class="lp-section">
+      <div class="container">
+        <div class="text-center mb-5">
+          <p class="lp-eyebrow">How It Works</p>
+          <h2 class="lp-title">Your Personal AI Yoga Coach</h2>
+          <div class="lp-divider mx-auto"></div>
+          <p class="lp-sub mx-auto" style="max-width:600px;">Align AI uses computer vision and keypoint detection to analyse your pose frame-by-frame &mdash; like having a world-class instructor available 24/7, on your device.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-4">
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <div class="step-title">Tell Us Your Mood</div>
+              <p class="step-text">Our AI recommendation engine selects the most beneficial yoga poses based on your current emotional state &mdash; because the right pose at the right moment is transformative.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <div class="step-title">Upload Your Pose</div>
+              <p class="step-text">Snap a photo attempting the pose. Our MediaPipe-powered system maps 33 body keypoints with sub-millimetre precision to understand exactly how you are positioned.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <div class="step-title">Receive Instant Feedback</div>
+              <p class="step-text">Get specific, joint-by-joint correction guidance alongside an annotated image showing precisely what to adjust for a perfect, safe pose.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CTA ── -->
+    <section class="cta-section">
+      <div class="container">
+        <p class="lp-eyebrow">Begin Today</p>
+        <h2 class="lp-title" style="max-width:640px; margin:0 auto 1rem;">&ldquo;The journey of a thousand poses begins with a single conscious breath.&rdquo;</h2>
+        <p class="lp-sub mx-auto mb-4" style="max-width:500px;">Join a smarter way to practise yoga &mdash; AI-guided, personalised, and always accurate.</p>
+        <div class="d-flex justify-content-center flex-wrap" style="gap:1.25rem;">
+          <a href="{{ url_for('auth.register') }}" class="btn-beige">Start Your Journey</a>
+          <a href="{{ url_for('auth.login') }}" class="btn-beige-outline">Sign In</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="lp-footer">
+      <div class="container">
+        <p>&#129512; Align AI Yoga &nbsp;&middot;&nbsp; AI-Powered Pose Correction &nbsp;&middot;&nbsp; &copy; 2026</p>
+      </div>
+    </footer>
+  {% endblock %}
+
+</div><!-- /header_section -->
+
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
 </html>

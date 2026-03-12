@@ -1,54 +1,39 @@
-{% extends 'index.html' %}
-
+﻿{% extends 'index.html' %}
+{% block title %}Login — Align AI Yoga{% endblock %}
 
 {% block navbar %}
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{url_for('index')}}" style="color: white;">Home</a>
-        </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="{{url_for('about')}}" style="color: white; padding-left: 40px;">About</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('register')}}" style="color: white; padding-left: 40px;">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('login')}}" style="color: yellow; padding-left: 40px;">LogIn</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url_for('chatbot')}}" style="color: white; padding-left: 40px;">Chatbot</a>
-        </li>
-    </ul>
+  <ul class="navbar-nav ms-auto align-items-lg-center">
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.index') }}">Home</a></li>
+    <li class="nav-sep-line"></li>
+    <li class="nav-item"><a class="nav-link nav-text nav-active" href="{{ url_for('auth.login') }}">Login</a></li>
+    <li class="nav-sep-line"></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.register') }}">Register</a></li>
+  </ul>
 {% endblock %}
 
-
 {% block content %}
-    <div style="min-height: 650px; background-color: rgba(0, 0, 0, 0.797);">
-        <div class="container-fluid">
-            <div class="contact_section_2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <center>
-                            <form action="{{url_for('login')}}" method="post" style="background-color: rgba(255, 255, 255, 0.575); width: 600px; border-radius: 10px;">
-                                <div class="col-11" style="padding-top: 20px; padding-bottom: 20px;">
-                                    
-                                    <h1 class="contact_taital" style="color: rgba(0, 0, 0, 0.849);">Login</h1>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-card-logo">🧘</div>
+    <h2 class="auth-card-title">Welcome back</h2>
+    <p class="auth-card-sub">Sign in to your Align AI account</p>
 
-                                    <input type="email" name="email" class="mail_text" placeholder="Email ID" required>
-                                    <input type="password" name="password" class="mail_text" placeholder="Password" required>
-                                    <button type="submit" class="btn btn-info" style="margin-top: 20px; width: 30%;">Submit</button><br><br>
+    <form action="{{ url_for('auth.login') }}" method="post" novalidate>
+      <div class="mb-3">
+        <label class="form-label" for="email">Email Address</label>
+        <input type="email" id="email" name="email" class="form-control"
+               placeholder="you@example.com" required autofocus autocomplete="email">
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control"
+               placeholder="Your password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn-submit">Sign In</button>
+    </form>
 
-                                    <a href="{{url_for('register')}}">
-                                        Don't you have an account? 
-                                        <u style="color: blue;"><i>Register here</i></u>
-                                    </a>
-                                </div>
-                            </form>
-                        </center>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="auth-divider"></div>
+    <p class="auth-footer">Don't have an account? <a href="{{ url_for('auth.register') }}">Create one</a></p>
+  </div>
+</div>
 {% endblock %}

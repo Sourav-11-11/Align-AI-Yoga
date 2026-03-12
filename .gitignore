@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -11,39 +12,35 @@ __pycache__/
 venv/
 env/
 
-# Environment variables
+# Environment variables — never commit secrets
 .env
+*.env
 
 # Logs
 *.log
 
-# Model weights (very important)
+# ML model weights (large binary files)
 *.pt
 *.weights
 *.h5
 *.onnx
-
-# YOLO config backup
 *.cfg
 
-# Saved output images
-saved_images/
+# Generated / uploaded images — store only the .gitkeep placeholder
+FRONT END/static/saved_images/*
+!FRONT END/static/saved_images/.gitkeep
 
-# Large datasets (if heavy)
-dataset/
+# Pose reference image dataset (large, not source code)
+FRONT END/data/
+FRONT END/static/img/
 
-# OS files
+# OS metadata
 .DS_Store
 Thumbs.db
 
-# VS Code
+# VS Code workspace settings
 .vscode/
-data/
-dataset/
-saved_images/
-*.pt
-*.weights
 
-# Build
+# Build artifacts
 dist/
 build/

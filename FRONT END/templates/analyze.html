@@ -1,0 +1,133 @@
+{% extends 'index.html' %}
+{% block title %}Analyze Your Pose — Align AI Yoga{% endblock %}
+
+{% block navbar %}
+  <ul class="navbar-nav ms-auto align-items-lg-center">
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.home') }}">Home</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('yoga.yoga1') }}">Yoga</a></li>
+    <li class="nav-item"><a class="nav-link nav-text nav-active" href="{{ url_for('yoga.analyze') }}">Analyze</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('dashboard.chatbot') }}">Chatbot</a></li>
+    <li class="nav-item"><a class="nav-link nav-text" href="{{ url_for('auth.logout') }}">Logout</a></li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+<div class="page-overlay page-overlay--top">
+  <div class="container" style="max-width:760px; padding-bottom:4rem;">
+
+    <div class="text-center mb-5" style="padding-top:2.5rem;">
+      <p class="hero-eyebrow">AI Pose Correction</p>
+      <h1 class="session-page-title">Analyse Your Pose</h1>
+      <p class="session-page-sub">Upload a photo of yourself performing any yoga pose. Our AI will detect your keypoints and give you instant correction feedback.</p>
+    </div>
+
+    <div class="ui-card analyze-upload-card">
+
+      <!-- How it works -->
+      <div class="analyze-how-it-works mb-4">
+        <div class="analyze-step-row">
+          <div class="analyze-step-icon">1</div>
+          <div class="analyze-step-text">Select the yoga pose you are performing from the dropdown below.</div>
+        </div>
+        <div class="analyze-step-row">
+          <div class="analyze-step-icon">2</div>
+          <div class="analyze-step-text">Upload a clear, full-body photo — ideally with good lighting.</div>
+        </div>
+        <div class="analyze-step-row">
+          <div class="analyze-step-icon">3</div>
+          <div class="analyze-step-text">Click <strong>Analyse</strong> and receive AI-powered feedback in seconds.</div>
+        </div>
+      </div>
+
+      <form action="{{ url_for('yoga.yoga2') }}" method="post" enctype="multipart/form-data">
+        <!-- mood is not required on this route — pass empty -->
+        <input type="hidden" name="mood" value="">
+
+        <div class="mb-4">
+          <label for="pose_name" class="form-label">Which pose are you performing?</label>
+          <select id="pose_name" name="pose_name" class="form-select" required>
+            <option value="" disabled {% if not selected_pose %}selected{% endif %}>Select a pose&hellip;</option>
+            {% for pose in poses %}
+              <option value="{{ pose }}" {% if pose == selected_pose %}selected{% endif %}>{{ pose }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label for="img" class="form-label">Upload your pose photo</label>
+          <div class="analyze-upload-area" id="uploadArea">
+            <input type="file" id="img" name="img" class="analyze-file-input" accept=".jpg,.jpeg,.png" required>
+            <div class="analyze-upload-placeholder" id="uploadPlaceholder">
+              <div class="analyze-upload-icon">&#128247;</div>
+              <div class="analyze-upload-text">Click or drag a photo here</div>
+              <div class="analyze-upload-hint">JPG or PNG, full-body photo recommended</div>
+            </div>
+            <img id="imgPreview" src="" alt="Your pose preview" class="analyze-img-preview" style="display:none;">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit w-100" id="analyzeBtn">
+          Analyse My Pose
+        </button>
+      </form>
+
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('yoga.yoga1') }}" class="back-link">&larr; Back to Yoga Session</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const fileInput  = document.getElementById('img');
+const preview    = document.getElementById('imgPreview');
+const placeholder= document.getElementById('uploadPlaceholder');
+const uploadArea = document.getElementById('uploadArea');
+
+fileInput.addEventListener('change', function () {
+  const file = this.files[0];
+  if (!file) { resetPreview(); return; }
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = 'block';
+  placeholder.style.display = 'none';
+});
+
+// Drag-and-drop support
+uploadArea.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  uploadArea.classList.add('drag-over');
+});
+uploadArea.addEventListener('dragleave', function() {
+  uploadArea.classList.remove('drag-over');
+});
+uploadArea.addEventListener('drop', function(e) {
+  e.preventDefault();
+  uploadArea.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    fileInput.files = e.dataTransfer.files;
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+  }
+});
+
+function resetPreview() {
+  preview.style.display = 'none';
+  preview.removeAttribute('src');
+  placeholder.style.display = '';
+}
+
+// Pre-select pose from URL param
+(function() {
+  const urlPose = {{ selected_pose | tojson }};
+  if (urlPose) {
+    const sel = document.getElementById('pose_name');
+    if (sel) sel.value = urlPose;
+  }
+})();
+</script>
+{% endblock %}
