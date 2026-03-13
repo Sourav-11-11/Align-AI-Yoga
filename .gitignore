@@ -60,6 +60,12 @@ backend/data/
 *.mysql
 instance/
 
+# Data folders (large datasets, temporary data)
+dat/
+data/
+*.dat
+*.data
+
 # OS metadata
 .DS_Store
 Thumbs.db
