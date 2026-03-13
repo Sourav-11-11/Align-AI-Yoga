@@ -14,67 +14,176 @@
 
 {% block content %}
 <div class="page-overlay page-overlay--top">
-  <div class="container" style="max-width:760px; padding-bottom:4rem;">
+  <div class="container" style="max-width:1000px; padding-bottom:4rem;">
 
-    <div class="text-center mb-5" style="padding-top:2.5rem;">
-      <p class="hero-eyebrow">AI Pose Correction</p>
-      <h1 class="session-page-title">Analyse Your Pose</h1>
-      <p class="session-page-sub">Upload a photo of yourself performing any yoga pose. Our AI will detect your keypoints and give you instant correction feedback.</p>
-    </div>
-
-    <div class="ui-card analyze-upload-card">
-
-      <!-- How it works -->
-      <div class="analyze-how-it-works mb-4">
-        <div class="analyze-step-row">
-          <div class="analyze-step-icon">1</div>
-          <div class="analyze-step-text">Select the yoga pose you are performing from the dropdown below.</div>
-        </div>
-        <div class="analyze-step-row">
-          <div class="analyze-step-icon">2</div>
-          <div class="analyze-step-text">Upload a clear, full-body photo — ideally with good lighting.</div>
-        </div>
-        <div class="analyze-step-row">
-          <div class="analyze-step-icon">3</div>
-          <div class="analyze-step-text">Click <strong>Analyse</strong> and receive AI-powered feedback in seconds.</div>
-        </div>
+    <div class="analyze-hero-section">
+      <div class="analyze-hero-content">
+        <p class="analyze-hero-eyebrow">Choose Your Analysis Mode</p>
+        <h1 class="analyze-hero-title">Analyze Your Yoga Pose in Real Time</h1>
+        <p class="analyze-hero-description">
+          Select how you want to analyze. Live mode opens a full popup with large video on the left and instant results on the right.
+        </p>
       </div>
 
-      <form action="{{ url_for('yoga.yoga2') }}" method="post" enctype="multipart/form-data">
-        <!-- mood is not required on this route — pass empty -->
-        <input type="hidden" name="mood" value="">
-
-        <div class="mb-4">
-          <label for="pose_name" class="form-label">Which pose are you performing?</label>
-          <select id="pose_name" name="pose_name" class="form-select" required>
-            <option value="" disabled {% if not selected_pose %}selected{% endif %}>Select a pose&hellip;</option>
-            {% for pose in poses %}
-              <option value="{{ pose }}" {% if pose == selected_pose %}selected{% endif %}>{{ pose }}</option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <div class="mb-4">
-          <label for="img" class="form-label">Upload your pose photo</label>
-          <div class="analyze-upload-area" id="uploadArea">
-            <input type="file" id="img" name="img" class="analyze-file-input" accept=".jpg,.jpeg,.png" required>
-            <div class="analyze-upload-placeholder" id="uploadPlaceholder">
-              <div class="analyze-upload-icon">&#128247;</div>
-              <div class="analyze-upload-text">Click or drag a photo here</div>
-              <div class="analyze-upload-hint">JPG or PNG, full-body photo recommended</div>
-            </div>
-            <img id="imgPreview" src="" alt="Your pose preview" class="analyze-img-preview" style="display:none;">
-          </div>
-        </div>
-
-        <button type="submit" class="btn-submit w-100" id="analyzeBtn">
-          Analyse My Pose
+      <div class="analyze-choice-grid">
+        <button type="button" id="openLiveModalBtn" class="analyze-choice-card">
+          <span class="analyze-choice-icon">🎥</span>
+          <span class="analyze-choice-title">Live Analysis</span>
+          <span class="analyze-choice-desc">Open webcam popup with big live feed and side-by-side results.</span>
         </button>
-      </form>
 
+        <button type="button" id="openUploadModalBtn" class="analyze-choice-card">
+          <span class="analyze-choice-icon">🖼️</span>
+          <span class="analyze-choice-title">Image Upload</span>
+          <span class="analyze-choice-desc">Upload a photo in popup and get quick form corrections.</span>
+        </button>
+      </div>
     </div>
 
-    <div class="text-center mt-4">
+    <div id="liveAnalyzeModal" class="analyze-modal" aria-hidden="true">
+      <div class="analyze-modal-backdrop" data-close-modal="liveAnalyzeModal"></div>
+      <div class="analyze-modal-dialog analyze-modal-dialog--live" role="dialog" aria-modal="true" aria-label="Live pose analysis">
+        <button type="button" class="analyze-modal-close" id="closeLiveModalBtn" aria-label="Close live analysis">&times;</button>
+
+        <div class="analyze-hero-card analyze-hero-card--modal">
+          <div class="analyze-featured-badge">Live Analysis</div>
+
+          <div class="analyze-hero-controls">
+            <div>
+              <label for="pose_name_hero" class="analyze-hero-label">Select Your Pose</label>
+              <select id="pose_name_hero" name="pose_name_hero" class="form-select analyze-hero-select" required>
+                <option value="" disabled selected>Choose a yoga pose…</option>
+                {% for pose in poses %}
+                  <option value="{{ pose }}" {% if pose == selected_pose %}selected{% endif %}>{{ pose }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="button" class="btn-hero-primary" id="startLiveBtn">
+              <span class="btn-hero-icon">▶</span>
+              <span class="btn-hero-text">Start Live Analysis</span>
+            </button>
+          </div>
+
+          <div id="heroWebcamContainer" class="analyze-hero-webcam" style="display:none;">
+            <div class="analyze-webcam-left">
+              <div class="analyze-webcam-stage">
+                <video id="liveWebcamVideo" class="live-webcam-video" autoplay playsinline muted></video>
+                <canvas id="liveWebcamCanvas" class="live-webcam-canvas"></canvas>
+                <div id="liveWebcamStatus" class="analyze-webcam-status">Initializing webcam...</div>
+              </div>
+              <button type="button" class="btn-snapshot" id="snapBtn" style="display:none;" title="Capture best score">
+                📸 Capture & Save
+              </button>
+            </div>
+
+            <div class="analyze-feedback-right">
+              <div class="analyze-score-display">
+                <div class="analyze-score-big">
+                  <span id="livePoseScore" class="analyze-score-number">--</span>
+                  <span class="analyze-score-percent">%</span>
+                </div>
+                <div class="analyze-score-label-big">Pose Accuracy</div>
+              </div>
+
+              <div id="analyzeFeedbackCorrections" class="analyze-result-block">
+                <div class="analyze-result-title">Key Adjustments</div>
+                <ul id="liveCorrections" class="analyze-result-list">
+                  <li>Position your body fully in frame to begin.</li>
+                </ul>
+              </div>
+
+              <div id="analyzeFeedbackTips" class="analyze-result-block">
+                <div class="analyze-result-title">Tips to Improve</div>
+                <ul id="liveTips" class="analyze-result-list">
+                  <li>Maintain steady breathing</li>
+                </ul>
+              </div>
+
+              <div id="liveSavedResult" class="analyze-result-block analyze-saved-result" style="display:none;">
+                <div class="analyze-result-title">Saved Snapshot Result</div>
+                <img id="savedSnapshotImg" class="analyze-saved-image" alt="Saved pose snapshot">
+                <div class="analyze-saved-meta">
+                  <span id="savedSnapshotScore" class="analyze-saved-score">--%</span>
+                  <span id="savedSnapshotPose" class="analyze-saved-pose">Pose</span>
+                  <span id="savedSnapshotTime" class="analyze-saved-time">Just now</span>
+                </div>
+
+                <div class="analyze-saved-feedback-title">Saved Corrections</div>
+                <ul id="savedCorrections" class="analyze-result-list"></ul>
+
+                <div class="analyze-saved-feedback-title">Saved Tips</div>
+                <ul id="savedTips" class="analyze-result-list"></ul>
+              </div>
+
+              <button type="button" class="btn-stop-analysis" id="stopLiveBtn" style="display:none;">
+                ⏹ Stop Analysis
+              </button>
+            </div>
+          </div>
+
+          <div id="heroPreWebcamState" class="analyze-pre-webcam-state">
+            <div class="analyze-pre-webcam-icon">📱</div>
+            <div class="analyze-pre-webcam-text">
+              <div class="analyze-pre-webcam-title">Ready for Live Analysis</div>
+              <div class="analyze-pre-webcam-desc">
+                Start live analysis and hold a steady pose. Final result appears automatically once pose stabilizes.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="uploadAnalyzeModal" class="analyze-modal" aria-hidden="true">
+      <div class="analyze-modal-backdrop" data-close-modal="uploadAnalyzeModal"></div>
+      <div class="analyze-modal-dialog analyze-modal-dialog--upload" role="dialog" aria-modal="true" aria-label="Image upload analysis">
+        <button type="button" class="analyze-modal-close" id="closeUploadModalBtn" aria-label="Close image upload">&times;</button>
+
+        <div class="analyze-upload-card">
+          <div class="analyze-upload-header">
+            <div>
+              <h3 class="analyze-upload-title">Upload a Photo Instead</h3>
+              <p class="analyze-upload-subtitle">
+                Upload a clear full-body image to get instant AI pose corrections.
+              </p>
+            </div>
+          </div>
+
+          <form action="{{ url_for('yoga.yoga2') }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="mood" value="">
+
+            <div class="analyze-upload-form-group">
+              <label for="pose_name" class="form-label">Which pose are you performing?</label>
+              <select id="pose_name" name="pose_name" class="form-select" required>
+                <option value="" disabled {% if not selected_pose %}selected{% endif %}>Select a pose&hellip;</option>
+                {% for pose in poses %}
+                  <option value="{{ pose }}" {% if pose == selected_pose %}selected{% endif %}>{{ pose }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="analyze-upload-form-group">
+              <label for="img" class="form-label">Upload Your Photo</label>
+              <div class="analyze-upload-area" id="uploadArea">
+                <input type="file" id="img" name="img" class="analyze-file-input" accept=".jpg,.jpeg,.png" required>
+                <div class="analyze-upload-placeholder" id="uploadPlaceholder">
+                  <div class="analyze-upload-icon">📷</div>
+                  <div class="analyze-upload-text">Click or drag a photo here</div>
+                  <div class="analyze-upload-hint">JPG or PNG, full-body photo recommended</div>
+                </div>
+                <img id="imgPreview" src="" alt="Your pose preview" class="analyze-img-preview" style="display:none;">
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit analyze-upload-btn" id="analyzeBtn">
+              Analyze Photo
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5">
       <a href="{{ url_for('yoga.yoga1') }}" class="back-link">&larr; Back to Yoga Session</a>
     </div>
 
@@ -82,6 +191,7 @@
 </div>
 
 <script>
+// File upload preview handling
 const fileInput  = document.getElementById('img');
 const preview    = document.getElementById('imgPreview');
 const placeholder= document.getElementById('uploadPlaceholder');
@@ -121,13 +231,134 @@ function resetPreview() {
   placeholder.style.display = '';
 }
 
+// Sync pose selection between hero and upload form
+const poseSelectHero = document.getElementById('pose_name_hero');
+const poseSelectForm = document.getElementById('pose_name');
+
+poseSelectHero.addEventListener('change', function() {
+  poseSelectForm.value = this.value;
+});
+
+poseSelectForm.addEventListener('change', function() {
+  poseSelectHero.value = this.value;
+});
+
 // Pre-select pose from URL param
 (function() {
   const urlPose = {{ selected_pose | tojson }};
   if (urlPose) {
-    const sel = document.getElementById('pose_name');
-    if (sel) sel.value = urlPose;
+    if (poseSelectHero) poseSelectHero.value = urlPose;
+    if (poseSelectForm) poseSelectForm.value = urlPose;
   }
 })();
+
+const startLiveBtn = document.getElementById('startLiveBtn');
+const stopLiveBtn = document.getElementById('stopLiveBtn');
+const heroWebcamContainer = document.getElementById('heroWebcamContainer');
+const heroPreWebcamState = document.getElementById('heroPreWebcamState');
+
+const liveAnalyzeModal = document.getElementById('liveAnalyzeModal');
+const uploadAnalyzeModal = document.getElementById('uploadAnalyzeModal');
+const openLiveModalBtn = document.getElementById('openLiveModalBtn');
+const openUploadModalBtn = document.getElementById('openUploadModalBtn');
+const closeLiveModalBtn = document.getElementById('closeLiveModalBtn');
+const closeUploadModalBtn = document.getElementById('closeUploadModalBtn');
+
+function openModal(modalEl) {
+  if (!modalEl) return;
+  modalEl.classList.add('is-open');
+  modalEl.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+}
+
+function closeModal(modalEl) {
+  if (!modalEl) return;
+  modalEl.classList.remove('is-open');
+  modalEl.setAttribute('aria-hidden', 'true');
+  if (!document.querySelector('.analyze-modal.is-open')) {
+    document.body.classList.remove('modal-open');
+  }
+}
+
+if (openLiveModalBtn) {
+  openLiveModalBtn.addEventListener('click', () => openModal(liveAnalyzeModal));
+}
+if (openUploadModalBtn) {
+  openUploadModalBtn.addEventListener('click', () => openModal(uploadAnalyzeModal));
+}
+if (closeLiveModalBtn) {
+  closeLiveModalBtn.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('livePose:stop'));
+    closeModal(liveAnalyzeModal);
+  });
+}
+if (closeUploadModalBtn) {
+  closeUploadModalBtn.addEventListener('click', () => closeModal(uploadAnalyzeModal));
+}
+
+document.querySelectorAll('[data-close-modal]').forEach((el) => {
+  el.addEventListener('click', () => {
+    const id = el.getAttribute('data-close-modal');
+    const modal = id ? document.getElementById(id) : null;
+    if (id === 'liveAnalyzeModal') {
+      window.dispatchEvent(new CustomEvent('livePose:stop'));
+    }
+    closeModal(modal);
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (liveAnalyzeModal && liveAnalyzeModal.classList.contains('is-open')) {
+    window.dispatchEvent(new CustomEvent('livePose:stop'));
+    closeModal(liveAnalyzeModal);
+  }
+  if (uploadAnalyzeModal && uploadAnalyzeModal.classList.contains('is-open')) {
+    closeModal(uploadAnalyzeModal);
+  }
+});
+
+if (startLiveBtn) {
+  startLiveBtn.addEventListener('click', function() {
+    if (heroWebcamContainer && heroWebcamContainer.style.display === 'none') {
+      heroWebcamContainer.style.display = 'grid';
+    }
+    if (heroPreWebcamState) {
+      heroPreWebcamState.style.display = 'none';
+    }
+    startLiveBtn.classList.add('hero-btn-active');
+  });
+}
+
+if (stopLiveBtn) {
+  stopLiveBtn.addEventListener('click', function() {
+    if (heroPreWebcamState) {
+      heroPreWebcamState.style.display = 'flex';
+    }
+  });
+}
 </script>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script>
+    window.LIVE_POSE_CONFIG = {
+      referenceApiUrl: "{{ url_for('yoga.pose_reference_api') }}",
+      poseSelectId: "pose_name_hero",
+      panelId: "heroWebcamContainer",
+      toggleBtnId: "startLiveBtn",
+      startBtnId: "startLiveBtn",
+      stopBtnId: "stopLiveBtn",
+      videoId: "liveWebcamVideo",
+      canvasId: "liveWebcamCanvas",
+      statusId: "liveWebcamStatus",
+      scoreId: "livePoseScore",
+      correctionsId: "liveCorrections",
+      tipsId: "liveTips"
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="{{ url_for('static', filename='js/frontend/pose_overlay.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/frontend/webcam_pose.js') }}"></script>
 {% endblock %}

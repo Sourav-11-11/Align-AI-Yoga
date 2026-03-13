@@ -1,65 +1,38 @@
 """
-Pose correction logic.
+Legacy pose correction adapter.
 
-Compares detected joint angles against the reference values in
-reference_angles.py and generates human-readable feedback strings.
-
-Rule (configurable via angle_tolerance):
-  |detected - reference| <= tolerance  → "Looks correct ✓"
-  detected < reference - tolerance     → "Increase {joint} by X°"
-  detected > reference + tolerance     → "Decrease {joint} by X°"
+This module keeps the original `generate_corrections` API used by routes/tests,
+but internally delegates to the newer evaluator + natural-language feedback
+modules.
 """
 
 import logging
-from typing import Dict, List
+from typing import Dict, List, Optional
 
-from .reference_angles import REFERENCE_ANGLES
+from .pose_evaluator import evaluate_pose
+from .pose_feedback import build_pose_feedback
 
 logger = logging.getLogger(__name__)
 
 
 def generate_corrections(
-    detected_angles: Dict[str, float],
+    detected_angles: Dict[str, Optional[float]],
     pose_name: str,
     angle_tolerance: float = 5.0,
 ) -> List[str]:
     """
-    Compare detected angles against the reference for pose_name.
+    Backward-compatible wrapper returning correction strings.
 
-    Args:
-        detected_angles: Dict of joint_name → measured angle (degrees).
-        pose_name:       Lowercase pose name matching REFERENCE_ANGLES keys.
-        angle_tolerance: Accepted deviation before reporting a correction.
-
-    Returns:
-        List of human-readable correction strings, one per joint.
+    `angle_tolerance` is retained for API compatibility; severity thresholds
+    are now standardized in `pose_evaluator` (perfect/minor/moderate/major).
     """
-    reference = REFERENCE_ANGLES.get(pose_name.lower().strip())
-    if reference is None:
+    evaluation = evaluate_pose(detected_angles, pose_name)
+    if not evaluation.joint_results:
         logger.warning("No reference data for pose: '%s'", pose_name)
         return [
             f"No reference data found for '{pose_name}'. "
             "Please check the pose name spelling."
         ]
 
-    corrections = []
-    for joint, detected in detected_angles.items():
-        ref = reference.get(joint)
-        if ref is None:
-            continue  # Joint not calibrated for this pose — skip silently.
-
-        diff = detected - ref
-        if diff < -angle_tolerance:
-            corrections.append(
-                f"{joint}: increase by {abs(diff):.1f}° "
-                f"(detected {detected:.1f}°, target {ref}°)"
-            )
-        elif diff > angle_tolerance:
-            corrections.append(
-                f"{joint}: decrease by {diff:.1f}° "
-                f"(detected {detected:.1f}°, target {ref}°)"
-            )
-        else:
-            corrections.append(f"{joint}: looks correct ✓  ({detected:.1f}°)")
-
-    return corrections
+    feedback = build_pose_feedback(evaluation)
+    return feedback["corrections"]

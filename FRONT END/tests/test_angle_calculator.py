@@ -41,12 +41,14 @@ def test_3d_right_angle():
 def test_compute_body_angles_keys():
     """compute_body_angles should always return the four expected keys."""
     kp = PoseKeypoints(
-        left_shoulder=[0, 10],
-        left_elbow=[10, 10],
-        left_wrist=[20, 10],
-        left_hip=[0, 0],
-        left_knee=[10, 0],
-        left_ankle=[20, 0],
+        shoulder=[0, 10],
+        elbow=[10, 10],
+        wrist=[20, 10],
+        hip=[0, 0],
+        knee=[10, 0],
+        ankle=[20, 0],
+        side="left",
+        visibility={},
     )
     angles = compute_body_angles(kp)
     expected_keys = {"Shoulder Angle", "Elbow Angle", "Hip Angle", "Knee Angle"}
@@ -54,15 +56,18 @@ def test_compute_body_angles_keys():
 
 
 def test_compute_body_angles_values_in_range():
-    """All computed angles must be within [0°, 360°]."""
+    """All computed angles must be within [0°, 180°]."""
     kp = PoseKeypoints(
-        left_shoulder=[100, 200],
-        left_elbow=[150, 300],
-        left_wrist=[100, 400],
-        left_hip=[80, 100],
-        left_knee=[100, 50],
-        left_ankle=[120, 10],
+        shoulder=[100, 200],
+        elbow=[150, 300],
+        wrist=[100, 400],
+        hip=[80, 100],
+        knee=[100, 50],
+        ankle=[120, 10],
+        side="left",
+        visibility={},
     )
     angles = compute_body_angles(kp)
     for name, val in angles.items():
-        assert 0.0 <= val <= 360.0, f"{name} = {val} is out of range"
+        assert val is not None
+        assert 0.0 <= val <= 180.0, f"{name} = {val} is out of range"

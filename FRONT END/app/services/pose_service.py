@@ -12,12 +12,13 @@ import os
 import logging
 import cv2
 
-from typing import Tuple, List, Optional
+from typing import Dict, List, Optional, Tuple
 from flask import current_app
 
 from ml.pose_detector import extract_keypoints
 from ml.angle_calculator import compute_body_angles
-from ml.pose_corrector import generate_corrections
+from ml.pose_evaluator import evaluate_pose
+from ml.pose_feedback import build_pose_feedback
 from ml.annotator import annotate_image
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ def analyze_pose(
     image_path: str,
     pose_name: str,
     angle_tolerance: float = 5.0,
-) -> Tuple[List[str], Optional[str]]:
+) -> Tuple[Dict[str, object], Optional[str]]:
     """
     Full analysis pipeline for a single uploaded image.
 
@@ -37,8 +38,8 @@ def analyze_pose(
         angle_tolerance: Degrees within which a joint angle is considered correct.
 
     Returns:
-        (corrections, annotated_filename)
-        corrections         -- List of human-readable feedback strings.
+        (result, annotated_filename)
+        result keys: score (int), corrections (list[str]), tips (list[str]).
         annotated_filename  -- Filename of the annotated image in saved_images/,
                                or None if detection failed.
     """
@@ -46,26 +47,46 @@ def analyze_pose(
     image_bgr = cv2.imread(image_path)
     if image_bgr is None:
         logger.error("Could not read image at: %s", image_path)
-        return ["Could not load the uploaded image."], None
+        return {
+            "score": 0,
+            "corrections": ["Could not load the uploaded image."],
+            "tips": [],
+        }, None
 
     image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
 
     # ── Detect pose keypoints ─────────────────────────────────────────────────
     keypoints = extract_keypoints(image_rgb)
     if keypoints is None:
-        return [
-            "No body detected in the image. "
-            "Please upload a clearer, full-body photo with good lighting."
-        ], None
+        return {
+            "score": 0,
+            "corrections": [
+                "No body detected clearly. Upload a full-body photo with good lighting."
+            ],
+            "tips": [
+                "Keep your full body visible from head to ankle.",
+                "Place the camera at hip height and avoid backlight.",
+            ],
+        }, None
 
     # ── Calculate joint angles ────────────────────────────────────────────────
     detected_angles = compute_body_angles(keypoints)
 
-    # ── Generate corrections ──────────────────────────────────────────────────
-    corrections = generate_corrections(detected_angles, pose_name, angle_tolerance)
+    # ── Evaluate + build natural feedback ─────────────────────────────────────
+    evaluation = evaluate_pose(detected_angles, pose_name)
+    result = build_pose_feedback(evaluation)
+    joint_severity = {
+        joint_name: joint_result.severity
+        for joint_name, joint_result in evaluation.joint_results.items()
+    }
 
     # ── Annotate and save image ───────────────────────────────────────────────
-    annotated_bgr = annotate_image(image_bgr, keypoints, detected_angles)
+    annotated_bgr = annotate_image(
+        image_bgr,
+        keypoints,
+        detected_angles,
+        joint_severity=joint_severity,
+    )
 
     save_dir = current_app.config["SAVED_IMAGES_DIR"]
     os.makedirs(save_dir, exist_ok=True)
@@ -75,5 +96,10 @@ def analyze_pose(
     out_path = os.path.join(save_dir, annotated_filename)
     cv2.imwrite(out_path, annotated_bgr)
 
-    logger.info("Pose '%s' analyzed. Corrections: %d", pose_name, len(corrections))
-    return corrections, annotated_filename
+    logger.info(
+        "Pose '%s' analyzed. Score=%s, Corrections=%d",
+        pose_name,
+        result.get("score", 0),
+        len(result.get("corrections", [])),
+    )
+    return result, annotated_filename

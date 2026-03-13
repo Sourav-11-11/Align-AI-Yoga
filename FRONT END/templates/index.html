@@ -229,9 +229,60 @@
 
 </div><!-- /header_section -->
 
+{% set _hide_lumi_widget = request.endpoint in ['dashboard.chatbot', 'auth.login', 'auth.index'] %}
+{% if not _hide_lumi_widget %}
+<div id="lumi-widget" class="lumi-widget" aria-live="polite">
+  <div id="lumi-widget-bubble" class="lumi-widget-bubble" role="status" aria-hidden="true"></div>
+  <a
+    href="{{ url_for('dashboard.chatbot') }}"
+    id="lumi-widget-btn"
+    class="lumi-widget-btn"
+    aria-label="Open Lumi AI Assistant"
+    title="Lumi - AI Assistant"
+  >
+    <span class="lumi-widget-icon">&#129497;</span>
+    <span class="lumi-widget-name">Lumi - AI Assistant</span>
+  </a>
+</div>
+{% endif %}
+
 <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% if not _hide_lumi_widget %}
+<script>
+(function () {
+  const bubble = document.getElementById('lumi-widget-bubble');
+  if (!bubble) return;
+
+  const messages = [
+    "Hi, I'm Lumi. Need help?",
+    "Let me guide you.",
+    "Talk to me if you need help with poses.",
+    "I can help you improve your pose."
+  ];
+
+  let timerId = null;
+
+  function showBubble() {
+    const text = messages[Math.floor(Math.random() * messages.length)];
+    bubble.textContent = text;
+    bubble.classList.add('is-visible');
+    bubble.setAttribute('aria-hidden', 'false');
+
+    window.clearTimeout(timerId);
+    timerId = window.setTimeout(function () {
+      bubble.classList.remove('is-visible');
+      bubble.setAttribute('aria-hidden', 'true');
+    }, 4500);
+  }
+
+  // Light-touch onboarding: one delayed hint, then every 30s.
+  window.setTimeout(showBubble, 8000);
+  window.setInterval(showBubble, 20000);
+})();
+</script>
+{% endif %}
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>

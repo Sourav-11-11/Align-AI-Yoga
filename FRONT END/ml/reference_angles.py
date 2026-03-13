@@ -59,7 +59,7 @@ REFERENCE_ANGLES: dict[str, dict[str, float]] = {
         "Shoulder Angle": 96, "Elbow Angle": 108, "Hip Angle": 123, "Knee Angle": 90,
     },
     "bhairavasana": {
-        "Shoulder Angle": 132, "Elbow Angle": 162, "Hip Angle": 197, "Knee Angle": 127,
+        "Shoulder Angle": 132, "Elbow Angle": 162, "Hip Angle": 163, "Knee Angle": 127,
     },
     "bhekasana": {
         "Shoulder Angle": 144, "Elbow Angle": 108, "Hip Angle": 172, "Knee Angle": 91,
@@ -92,7 +92,7 @@ REFERENCE_ANGLES: dict[str, dict[str, float]] = {
         "Shoulder Angle": 90, "Elbow Angle": 113, "Hip Angle": 83, "Knee Angle": 166,
     },
     "eka pada koundinyanasana ii": {
-        "Shoulder Angle": 202, "Elbow Angle": 87, "Hip Angle": 52, "Knee Angle": 180,
+        "Shoulder Angle": 158, "Elbow Angle": 87, "Hip Angle": 52, "Knee Angle": 180,
     },
     "eka pada rajakapotasana ii": {
         "Shoulder Angle": 89, "Elbow Angle": 161, "Hip Angle": 168, "Knee Angle": 95,
@@ -173,7 +173,7 @@ REFERENCE_ANGLES: dict[str, dict[str, float]] = {
         "Shoulder Angle": 131, "Elbow Angle": 58, "Hip Angle": 179, "Knee Angle": 179,
     },
     "prasarita padottanasana": {
-        "Shoulder Angle": 277, "Elbow Angle": 178, "Hip Angle": 179, "Knee Angle": 178,
+        "Shoulder Angle": 83, "Elbow Angle": 178, "Hip Angle": 179, "Knee Angle": 178,
     },
     "purvottanasana": {
         "Shoulder Angle": 178, "Elbow Angle": 157, "Hip Angle": 147, "Knee Angle": 11,
@@ -200,7 +200,7 @@ REFERENCE_ANGLES: dict[str, dict[str, float]] = {
         "Shoulder Angle": 157, "Elbow Angle": 80, "Hip Angle": 179, "Knee Angle": 93,
     },
     "supta padangusthasana": {
-        "Shoulder Angle": 50, "Elbow Angle": 297, "Hip Angle": 143, "Knee Angle": 85,
+        "Shoulder Angle": 50, "Elbow Angle": 63, "Hip Angle": 143, "Knee Angle": 85,
     },
     "supta virasana": {
         "Shoulder Angle": 99, "Elbow Angle": 125, "Hip Angle": 179, "Knee Angle": 167,
@@ -218,7 +218,7 @@ REFERENCE_ANGLES: dict[str, dict[str, float]] = {
         "Shoulder Angle": 157, "Elbow Angle": 80, "Hip Angle": 179, "Knee Angle": 93,
     },
     "utthita ashwa sanchalanasana": {
-        "Shoulder Angle": 50, "Elbow Angle": 297, "Hip Angle": 143, "Knee Angle": 85,
+        "Shoulder Angle": 50, "Elbow Angle": 63, "Hip Angle": 143, "Knee Angle": 85,
     },
     "utthita hasta padangustasana": {
         "Shoulder Angle": 179, "Elbow Angle": 135, "Hip Angle": 180, "Knee Angle": 77,
@@ -245,6 +245,6 @@ REFERENCE_ANGLES: dict[str, dict[str, float]] = {
         "Shoulder Angle": 177, "Elbow Angle": 177, "Hip Angle": 177, "Knee Angle": 177,
     },
     "yoganidrasana": {
-        "Shoulder Angle": 267, "Elbow Angle": 111, "Hip Angle": 322, "Knee Angle": 171,
+        "Shoulder Angle": 93, "Elbow Angle": 111, "Hip Angle": 38, "Knee Angle": 171,
     },
 }

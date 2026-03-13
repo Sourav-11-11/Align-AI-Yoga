@@ -19,6 +19,12 @@
       <p class="hero-eyebrow mb-1">Step 3 of 3</p>
       <h2 class="section-title mb-4">Analysis Result</h2>
 
+      {% if pose_score is not none %}
+      <div class="all-correct-box mb-4" style="text-align:center;">
+        <strong>Pose Score: {{ pose_score }}/100</strong>
+      </div>
+      {% endif %}
+
       <!-- Annotated pose image -->
       {% if image_name %}
       <div class="text-center mb-4">
@@ -37,6 +43,13 @@
             <div class="correction-item">{{ correction }}</div>
           {% endfor %}
         {% endif %}
+      {% endif %}
+
+      {% if tips %}
+      <h5 class="section-title mt-4 mb-3" style="font-size:1rem;">Improvement Tips</h5>
+      {% for tip in tips %}
+        <div class="correction-item" style="border-left-color: rgba(76, 175, 80, 0.8);">{{ tip }}</div>
+      {% endfor %}
       {% endif %}
 
       <!-- Back button -->

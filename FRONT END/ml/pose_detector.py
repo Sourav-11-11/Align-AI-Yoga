@@ -1,14 +1,13 @@
 """
 Pose keypoint extraction using MediaPipe Pose.
 
-Encapsulates all MediaPipe calls so the rest of the codebase never imports
-mediapipe directly. Swapping to a different detector only requires editing
-this single file.
+This module selects the body side (left/right) with better landmark
+visibility so downstream angle measurements are more stable.
 """
 
 import logging
 import numpy as np
-from typing import Optional
+from typing import Dict, Optional, Tuple
 
 import mediapipe as mp
 
@@ -26,7 +25,7 @@ def extract_keypoints(
     min_detection_confidence: float = 0.5,
 ) -> Optional[PoseKeypoints]:
     """
-    Run MediaPipe Pose on an RGB image and return the six key joint positions.
+    Run MediaPipe Pose and return six key joint positions from the better side.
 
     Args:
         image_rgb:               H×W×3 uint8 RGB array (from cv2.cvtColor).
@@ -50,15 +49,69 @@ def extract_keypoints(
     lm = results.pose_landmarks.landmark
     h, w = image_rgb.shape[:2]
 
-    def pixel(landmark) -> list:
-        """Convert normalised [0,1] landmark coords to image pixel coords."""
-        return [int(landmark.x * w), int(landmark.y * h)]
+    joint_map = {
+        "left": {
+            "shoulder": _MP_POSE.PoseLandmark.LEFT_SHOULDER,
+            "elbow": _MP_POSE.PoseLandmark.LEFT_ELBOW,
+            "wrist": _MP_POSE.PoseLandmark.LEFT_WRIST,
+            "hip": _MP_POSE.PoseLandmark.LEFT_HIP,
+            "knee": _MP_POSE.PoseLandmark.LEFT_KNEE,
+            "ankle": _MP_POSE.PoseLandmark.LEFT_ANKLE,
+        },
+        "right": {
+            "shoulder": _MP_POSE.PoseLandmark.RIGHT_SHOULDER,
+            "elbow": _MP_POSE.PoseLandmark.RIGHT_ELBOW,
+            "wrist": _MP_POSE.PoseLandmark.RIGHT_WRIST,
+            "hip": _MP_POSE.PoseLandmark.RIGHT_HIP,
+            "knee": _MP_POSE.PoseLandmark.RIGHT_KNEE,
+            "ankle": _MP_POSE.PoseLandmark.RIGHT_ANKLE,
+        },
+    }
+
+    def _extract_side(side: str) -> Tuple[Dict[str, Optional[list]], Dict[str, float]]:
+        side_data: Dict[str, Optional[list]] = {}
+        visibility: Dict[str, float] = {}
+        for joint, landmark_id in joint_map[side].items():
+            landmark = lm[landmark_id]
+            vis = float(getattr(landmark, "visibility", 0.0))
+            visibility[joint] = vis
+
+            # Keep missing/low-confidence points as None for graceful handling.
+            if vis < 0.30:
+                side_data[joint] = None
+                continue
+
+            px = int(max(0, min(w - 1, landmark.x * w)))
+            py = int(max(0, min(h - 1, landmark.y * h)))
+            side_data[joint] = [px, py]
+
+        return side_data, visibility
+
+    left_points, left_visibility = _extract_side("left")
+    right_points, right_visibility = _extract_side("right")
+
+    left_score = sum(left_visibility.values())
+    right_score = sum(right_visibility.values())
+    selected_side = "right" if right_score > left_score else "left"
+    chosen_points = right_points if selected_side == "right" else left_points
+    chosen_visibility = right_visibility if selected_side == "right" else left_visibility
+
+    available_points = sum(
+        1
+        for j in ("shoulder", "elbow", "wrist", "hip", "knee", "ankle")
+        if chosen_points[j] is not None
+    )
+    if available_points < 4:
+        logger.warning("Pose detected but too many landmarks are missing (available=%d).", available_points)
+        return None
 
     return PoseKeypoints(
-        left_shoulder=pixel(lm[_MP_POSE.PoseLandmark.LEFT_SHOULDER]),
-        left_elbow=pixel(lm[_MP_POSE.PoseLandmark.LEFT_ELBOW]),
-        left_wrist=pixel(lm[_MP_POSE.PoseLandmark.LEFT_WRIST]),
-        left_hip=pixel(lm[_MP_POSE.PoseLandmark.LEFT_HIP]),
-        left_knee=pixel(lm[_MP_POSE.PoseLandmark.LEFT_KNEE]),
-        left_ankle=pixel(lm[_MP_POSE.PoseLandmark.LEFT_ANKLE]),
+        shoulder=chosen_points["shoulder"],
+        elbow=chosen_points["elbow"],
+        wrist=chosen_points["wrist"],
+        hip=chosen_points["hip"],
+        knee=chosen_points["knee"],
+        ankle=chosen_points["ankle"],
+        side=selected_side,
+        visibility=chosen_visibility,
     )
