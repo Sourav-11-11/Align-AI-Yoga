@@ -1,268 +1,139 @@
-# 🧘 CSP Align AI — Intelligent Yoga Pose Analysis Platform
+# 🧘 Align AI Yoga — Intelligent Pose Analysis & Recommendations
 
-> **AI-powered real-time yoga pose correction + mood-adaptive pose recommendations** — a full-stack machine learning application combining computer vision, collaborative filtering, and web development. Production-ready with architecture optimized for consistency, maintainability, and scalability.
-
----
-
-## 🎯 Executive Summary
-
-**CSP Align AI** is an intelligent fitness guidance platform that leverages computer vision and machine learning to provide real-time, personalized yoga coaching. The system:
-
-- **Analyzes user poses in real-time or from images** using MediaPipe's pose detection (33 body landmarks)
-- **Provides granular corrective feedback** via joint angle analysis (shoulder, elbow, hip, knee)
-- **Recommends poses based on mood** using collaborative filtering (SVD algorithm)
-- **Tracks user progress** with annotated images and session history in a personal dashboard
-- **Ensures consistency** between webcam and image upload modes through unified scoring configuration
-
-**Ideal for:** Fitness enthusiasts, remote yoga instructors, wellness apps, AI portfolio demonstration.
+> **Real-time yoga pose correction + mood-adaptive recommendations** using computer vision and machine learning. Full-stack application with unified scoring architecture.
 
 ---
 
-## 💡 Problem & Solution
+## 🎯 What It Does
 
-### The Challenge
-Yoga practitioners struggle with **form correction** without in-person guidance. Remote yoga coaching lacks real-time feedback. Users don't know which poses match their current emotional/physical state.
+✅ **Real-Time Pose Analysis** — Analyzes yoga form via webcam/image using MediaPipe (33 landmarks)  
+✅ **Smart Feedback** — Joint angle analysis (shoulder, elbow, hip, knee) with corrections  
+✅ **Mood Recommendations** — SVD-based collaborative filtering suggests poses matching your mood  
+✅ **Progress Tracking** — Dashboard with session history, annotated images, and feedback  
+✅ **Consistent Scoring** — Unified config ensures webcam and image modes produce comparable results  
 
-### Our Solution
-✅ **AI-powered form correction** — Real-time analysis identifies misalignments  
-✅ **Personalized recommendations** — ML model suggests poses matching user's mood  
-✅ **Accessible coaching** — Works on any device with a camera  
-✅ **Consistent feedback** — Same scoring logic across all analysis modes  
-✅ **Progress tracking** — Historical data and annotated results  
+---
+
+## 💡 Why It Matters
+
+**Problem:** Musicians lack real-time form correction without in-person coaching  
+**Solution:** AI-powered analysis + personalized mood-based recommendations = accessible guidance
 
 ---
 
 ## 🌟 Key Features
 
-### 1️⃣ **Real-Time Pose Analysis**
-- Webcam or image-based yoga pose detection
-- 4-joint angle calculation (shoulder, elbow, hip, knee)
-- Automatic comparison against 70+ calibrated reference poses
-- Actionable feedback: *"Increase shoulder angle by 12°"* or *"Decrease hip angle by 8°"*
-- Annotated visual output showing detected keypoints and angles
-
-### 2️⃣ **Mood-Based Recommendations**
-- Users select current mood → system recommends optimal poses
-- ML-powered collaborative filtering (SVD decomposition)
-- Trained on mood↔pose interaction matrix
-- Personalized suggestions improve with usage
-
-### 3️⃣ **Unified Scoring System**
-- **Fixed severity thresholds:** Perfect (±5°) → Minor (±10°) → Moderate (±20°) → Major
-- **Consistent scores:** 100 (perfect), 85 (minor), 65 (moderate), 35 (major), 0 (missing)
-- **All modes aligned:** Webcam and image upload produce comparable results
-- **Configurable via API:** Frontend fetches scoring rules server-side
-
-### 4️⃣ **User Dashboard**
-- Session history with mood, pose, score, timestamp
-- Filter by date range
-- View annotated images with feedback
-- Track progress over time
-
-### 5️⃣ **Robust Architecture**
-- Corrected reference angles (all within geometric constraints)
-- Separated concerns: ML logic, API, frontend
-- Centralized configuration for ML thresholds
-- Production-ready error handling
-
----
-
-## 🏗️ Architecture
-
-### System Design
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                  USER INTERFACE                         │
-│  (HTML/CSS/JS) — Responsive, Real-time Webcam          │
-└────────────┬────────────────────────────────────────────┘
-             │
-  ┌──────────▼──────────┐
-  │   Flask Backend     │
-  │  (API Routes)       │
-  └──────────┬──────────┘
-             │
-  ┌──────────▼──────────────────────────┐
-  │   ML Services Layer                 │
-  │  ┌─ Pose Detection (MediaPipe)     │
-  │  ┌─ Angle Calculation               │
-  │  ┌─ Pose Evaluation (Config)        │
-  │  └─ Recommendation Engine (SVD)    │
-  └──────────┬──────────────────────────┘
-             │
-  ┌──────────▼──────────────────────────┐
-  │   MySQL Database                    │
-  │  ┌─ User Sessions                   │
-  │  ┌─ Feedback History                │
-  │  └─ Pose References                │
-  └──────────────────────────────────────┘
-```
-
-### API Endpoints
-
-| Method | Endpoint | Purpose |
-|--------|----------|---------|
-| `GET` | `/api/pose-reference?pose=name` | **Fetch reference angles + evaluation config** |
-| `GET` | `/home` | Dashboard landing page |
-| `GET` | `/analyze` | Pose analysis interface |
-| `POST` | `/yoga2` | Image upload + correction |
-| `GET` | `/dashboard` | Session history |
-
-**Key:** `/api/pose-reference` returns unified scoring thresholds and weights ensuring frontend/backend consistency.
+| Feature | Details |
+|---------|---------|
+| **Pose Correction** | 4-joint angle calculation vs 70+ calibrated references |
+| **Recommendations** | ML-powered (SVD), learns from user mood data |
+| **Dashboard** | Session history, filters, annotated images |
+| **Scoring** | Fixed thresholds (Perfect 100 → Minor 85 → Moderate 65 → Major 35) |
+| **Architecture** | Centralized config ensures frontend/backend alignment |
 
 ---
 
 ## 🔧 Tech Stack
 
-| Layer | Technology | Why |
-|-------|-----------|-----|
-| **Frontend** | HTML5, CSS3, JavaScript (Vanilla) | Lightweight, responsive, real-time |
-| **Backend** | Flask (Python 3.11) | Rapid development, excellent ML integration |
-| **ML/CV** | MediaPipe 0.10.14, OpenCV, NumPy | Industry-standard pose detection, optimized |
-| **Recommendations** | Scikit-learn (SVD) | Fast, reliable collaborative filtering |
-| **Database** | MySQL | Persistent session and user data |
-| **Deployment** | Railway.app | One-click deployment, auto-scaling |
+| Component | Technology |
+|-----------|-----------|
+| **Frontend** | HTML5, CSS3, JavaScript |
+| **Backend** | Flask (Python 3.11) |
+| **ML/CV** | MediaPipe, OpenCV, NumPy, Scikit-learn (SVD) |
+| **Database** | MySQL |
+| **Deployment** | Render.com |
 
 ---
 
-## 📊 Machine Learning Details
+## 📊 ML Pipeline
 
-### Pose Detection Pipeline
-1. **Input:** Image (480–1080p)
-2. **MediaPipe:** Detects 33 body landmarks with visibility confidence
-3. **Angle Calculation:** Computes 4 joint angles from landmark coordinates
-4. **Severity Scoring:** Compares to reference angles using unified thresholds
+1. **Input:** Webcam/image (480–1080p)
+2. **Detection:** MediaPipe extracts 33 body landmarks
+3. **Calculation:** Compute 4 joint angles
+4. **Scoring:** Compare to 70+ calibrated references
 5. **Output:** Feedback + annotated image
 
-### Reference Angles
-- **Dataset:** Calibrated from 70+ pose training images
-- **Validation:** All angles within 0–180° (geometric constraints)
-- **Examples:** Adho Mukha Svanasana: Shoulder 179°, Hip 161°, Knee 157°
-
-### Collaborative Filtering (Recommendations)
-- **Algorithm:** Singular Value Decomposition (SVD)
-- **Input Matrix:** Mood × Pose interaction data
-- **Output:** Top-3 recommended poses per mood
-- **Accuracy:** Improves as user data accumulates
-
----
-
-## 🔐 Critical Improvements & Fixes
-
-### Problem #1: Scoring Inconsistency
-**Issue:** Backend (100/85/65/35) vs Frontend (99/92/84/72) thresholds diverged.  
-**Solution:** Centralized `evaluation_config.py` as single source of truth.  
-**Impact:** Both modes now produce comparable scores (±2-3 points).
-
-### Problem #2: Impossible Reference Angles
-**Issue:** 6 poses had reference angles >180° (geometrically unreachable).  
-**Examples:** prasarita_padottanasana Shoulder 277° → corrected to 83°  
-**Solution:** Recalibrated all angles to valid [0°, 180°] range.  
-**Impact:** No more false "major deviation" errors on good form.
-
-### Problem #3: Hardcoded Frontend Thresholds
-**Issue:** Webcam analysis used hardcoded severity rules.  
-**Solution:** `/api/pose-reference` now returns `severity_thresholds` & `scoring_weights`.  
-**Impact:** Frontend dynamically fetches config from server.
-
-### Problem #4: Secrets Management
-**Issue:** `.env` file in repository exposed credentials.  
-**Solution:** Enhanced `.gitignore`, created `.env.example` template.  
-**Impact:** Secrets never accidentally committed.
-
----
-
-## 📈 Metrics & Performance
-
-| Metric | Value | Notes |
-|--------|-------|-------|
-| **Pose Detection Accuracy** | ~95% | MediaPipe on standard lighting |
-| **Angle Calculation Precision** | ±2-3° | Depends on image clarity |
-| **Recommendations** | Top-3 per mood | SVD-based, improves over time |
-| **API Response Time** | <200ms | Excluding image upload I/O |
-| **Webcam Latency** | 150ms frames | Threaded processing |
-| **Database Queries** | <50ms average | Indexed user_name, session_id |
+**Performance:** ~95% accuracy, <200ms response time
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-CODE/
+align-ai-yoga/
 ├── FRONT END/
-│   ├── app/
-│   │   ├── routes/          # Flask blueprints (auth, yoga, dashboard)
-│   │   ├── services/        # ML service layer
-│   │   └── utils/           # Helpers (DB, config)
-│   ├── ml/
-│   │   ├── evaluation_config.py     # ⭐ Unified thresholds
-│   │   ├── pose_evaluator.py        # Joint evaluation logic
-│   │   ├── pose_detector.py         # MediaPipe wrapper
-│   │   ├── angle_calculator.py      # Geometry calculations
-│   │   └── reference_angles.py      # 70+ pose calibrations
-│   ├── static/
-│   │   ├── js/             # Webcam analysis, overlay
-│   │   ├── css/            # Responsive styling
-│   │   └── saved_images/   # User uploads (git-ignored)
-│   ├── templates/          # Jinja2 HTML templates
-│   ├── requirements.txt    # Python dependencies
-│   ├── run.py             # Flask app entry
-│   └── .env.example       # Environment template
-├── BACK END/
-│   ├── final.ipynb        # Data analysis notebooks
-│   └── rec.ipynb
-├── Procfile               # Railway deployment config
-├── runtime.txt            # Python 3.11.7
-├── DEPLOYMENT.md          # Full hosting guide
-└── README.md             # This file
+│   ├── app/                    # Flask app (routes, services)
+│   ├── ml/                     # ML logic (evaluation_config.py is key)
+│   ├── static/                 # Frontend assets (JS, CSS)
+│   ├── templates/              # HTML templates
+│   ├── requirements.txt
+│   └── run.py
+├── BACK END/                   # Notebooks (analysis, recommendations)
+├── Procfile                    # Render deployment config
+├── runtime.txt                 # Python 3.11.7
+└── .env.example               # Environment template
 ```
+
+**Key File:** `ml/evaluation_config.py` — Unified thresholds ensure scoring consistency
 
 ---
 
-## 🚀 Deployment Ready
+## 🚀 Deploy in 3 Steps
 
-### Hosting Recommendations
-- **Recommended:** Railway.app ($5-20/month, 1-click deploy from GitHub)
-- **Alternative:** Render.com, Google Cloud Run, PythonAnywhere
-- **Custom Domain:** Fully supported via DNS setup
+### 1. Push to GitHub
+```bash
+git add .
+git commit -m "Deploy to Render"
+git push origin main
+```
 
-### Deployment Steps
-1. Push to GitHub (`.gitignore` protects secrets)
-2. Sign up at Railway.app
-3. Connect GitHub repo
-4. Add environment variables
-5. **Live in 2 minutes!** 🎉
+### 2. Create Render App
+- Go to https://render.com
+- Connect GitHub repository
+- Select `FRONT END` directory as root
+- Add environment variables from `.env.example`
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for details.
+### 3. Go Live
+- Render auto-deploys ~2 mins
+- Get your URL: `https://align-ai-yoga.onrender.com`
+- Add custom domain (optional)
+
+**Cost:** Free for hobby; $7+/month for custom domain
+
+---
+
+## 🔐 Security
+
+✅ `.env` protected (never committed)  
+✅ `.gitignore` excludes: ML models, datasets, secrets, user uploads  
+✅ `.env.example` provides template without real values  
+✅ All dependencies listed in `requirements.txt`  
 
 ---
 
 ## 🎓 Skills Demonstrated
 
-✅ **Machine Learning:** Computer vision, collaborative filtering, data preprocessing  
-✅ **Full-Stack Development:** Flask backend, responsive frontend, real-time processing  
-✅ **Software Architecture:** Service layer pattern, API design, config management  
-✅ **Database Design:** Normalized schema, query optimization, session persistence  
-✅ **DevOps:** Docker-ready, environment management, cloud deployment  
-✅ **Quality Assurance:** Unified thresholds, corrected reference data, production-ready error handling  
+✅ **ML/AI:** Computer vision, collaborative filtering, data preprocessing  
+✅ **Full-Stack:** Flask, responsive frontend, real-time processing  
+✅ **Architecture:** Service layer, API design, config management  
+✅ **Database:** MySQL schema, query optimization  
+✅ **DevOps:** Deployment, environment management, cloud hosting  
 
 ---
 
-## 📞 Contact
+## 📈 Metrics
 
-**Project Status:** ✅ Production-ready  
-**Last Updated:** March 2026  
-**Deployment:** Live on Railway.app  
-
----
-
-## 📜 License
-
-Open source — feel free to explore, learn, and build upon!
+| Metric | Value |
+|--------|-------|
+| Pose Detection Accuracy | ~95% |
+| Angle Precision | ±2-3° |
+| API Response | <200ms |
+| Webcam Latency | 150ms/frame |
 
 ---
 
-**Built with:** Python · Flask · MediaPipe · Machine Learning · Web Development
+**Status:** ✅ Production-Ready | **Updated:** March 2026  
+**Built with:** Python · Flask · MediaPipe · ML
 | **SciPy** | SVD & sparse matrix operations |
 | **scikit-learn** | Collaborative filtering utilities |
 | **Pillow (PIL)** | Image handling |
