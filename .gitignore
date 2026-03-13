@@ -36,13 +36,13 @@ logs/
 __tf_models/
 
 # Generated / uploaded images — store only the .gitkeep placeholder
-FRONT END/static/saved_images/*
-!FRONT END/static/saved_images/.gitkeep
+frontend/static/saved_images/*
+!frontend/static/saved_images/.gitkeep
 
 # Pose reference image dataset (large, not source code)
-FRONT END/data/
-FRONT END/static/img/
-BACK END/data/
+frontend/data/
+frontend/static/img/
+backend/data/
 
 # Database files
 *.db
@@ -114,7 +114,7 @@ Desktop.ini
 .mypy_cache/
 
 # User-uploaded test images
-FRONT END/uploads/
+frontend/uploads/
 uploads/
 
 # Large dataset files
