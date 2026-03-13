@@ -1,1 +1,1 @@
-web: python FRONT\ END/run.py
+web: cd "FRONT END" && python run.py
