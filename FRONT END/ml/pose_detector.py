@@ -9,14 +9,14 @@ import logging
 import numpy as np
 from typing import Dict, Optional, Tuple
 
-import mediapipe as mp
+from mediapipe.python.solutions import pose
 
 from .types import PoseKeypoints
 
 logger = logging.getLogger(__name__)
 
 # Initialise MediaPipe landmarks enum once at module level (cheap).
-_MP_POSE = mp.solutions.pose
+_MP_POSE = pose
 
 
 def extract_keypoints(
