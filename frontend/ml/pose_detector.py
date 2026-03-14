@@ -9,14 +9,39 @@ import logging
 import numpy as np
 from typing import Dict, Optional, Tuple
 
-from mediapipe import solutions
-
 from .types import PoseKeypoints
 
 logger = logging.getLogger(__name__)
 
-# Initialise MediaPipe landmarks enum once at module level (cheap).
-_MP_POSE = solutions.pose
+# Lazy load mediapipe to handle version differences
+_MP_POSE = None
+
+
+def _get_mediapipe_pose():
+    """Lazy load mediapipe pose with compatibility handling."""
+    global _MP_POSE
+    if _MP_POSE is not None:
+        return _MP_POSE
+    
+    # Try importing via Python submodule path (works in 0.10.x)
+    try:
+        from mediapipe.python.solutions import pose
+        _MP_POSE = pose
+        return _MP_POSE
+    except (ImportError, ModuleNotFoundError):
+        logger.debug("mediapipe.python.solutions not available")
+
+    # Try direct mediapipe.solutions (some versions)
+    try:
+        from mediapipe import solutions
+        _MP_POSE = solutions.pose
+        return _MP_POSE
+    except (ImportError, AttributeError, ModuleNotFoundError):
+        logger.debug("mediapipe.solutions not available")
+
+    raise RuntimeError(
+        "Could not import mediapipe pose. Ensure mediapipe>=0.10 is installed."
+    )
 
 
 def extract_keypoints(
@@ -35,12 +60,14 @@ def extract_keypoints(
     Returns:
         PoseKeypoints if a body is detected, else None.
     """
-    with _MP_POSE.Pose(
+    pose = _get_mediapipe_pose()
+    
+    with pose.Pose(
         static_image_mode=True,
         model_complexity=model_complexity,
         min_detection_confidence=min_detection_confidence,
-    ) as pose:
-        results = pose.process(image_rgb)
+    ) as pose_detector:
+        results = pose_detector.process(image_rgb)
 
     if not results.pose_landmarks:
         logger.warning("MediaPipe: no pose landmarks detected.")
@@ -51,20 +78,20 @@ def extract_keypoints(
 
     joint_map = {
         "left": {
-            "shoulder": _MP_POSE.PoseLandmark.LEFT_SHOULDER,
-            "elbow": _MP_POSE.PoseLandmark.LEFT_ELBOW,
-            "wrist": _MP_POSE.PoseLandmark.LEFT_WRIST,
-            "hip": _MP_POSE.PoseLandmark.LEFT_HIP,
-            "knee": _MP_POSE.PoseLandmark.LEFT_KNEE,
-            "ankle": _MP_POSE.PoseLandmark.LEFT_ANKLE,
+            "shoulder": pose.PoseLandmark.LEFT_SHOULDER,
+            "elbow": pose.PoseLandmark.LEFT_ELBOW,
+            "wrist": pose.PoseLandmark.LEFT_WRIST,
+            "hip": pose.PoseLandmark.LEFT_HIP,
+            "knee": pose.PoseLandmark.LEFT_KNEE,
+            "ankle": pose.PoseLandmark.LEFT_ANKLE,
         },
         "right": {
-            "shoulder": _MP_POSE.PoseLandmark.RIGHT_SHOULDER,
-            "elbow": _MP_POSE.PoseLandmark.RIGHT_ELBOW,
-            "wrist": _MP_POSE.PoseLandmark.RIGHT_WRIST,
-            "hip": _MP_POSE.PoseLandmark.RIGHT_HIP,
-            "knee": _MP_POSE.PoseLandmark.RIGHT_KNEE,
-            "ankle": _MP_POSE.PoseLandmark.RIGHT_ANKLE,
+            "shoulder": pose.PoseLandmark.RIGHT_SHOULDER,
+            "elbow": pose.PoseLandmark.RIGHT_ELBOW,
+            "wrist": pose.PoseLandmark.RIGHT_WRIST,
+            "hip": pose.PoseLandmark.RIGHT_HIP,
+            "knee": pose.PoseLandmark.RIGHT_KNEE,
+            "ankle": pose.PoseLandmark.RIGHT_ANKLE,
         },
     }
 
