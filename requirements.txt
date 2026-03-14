@@ -2,6 +2,7 @@
 flask>=3.0
 python-dotenv>=1.0
 werkzeug>=3.0
+requests>=2.31
 
 # --- Database ----------------------------------------------------------------
 mysql-connector-python>=8.3
