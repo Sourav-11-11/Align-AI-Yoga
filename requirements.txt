@@ -5,7 +5,14 @@ werkzeug>=3.0
 requests>=2.31
 
 # --- Database ----------------------------------------------------------------
-mysql-connector-python>=8.3
+Flask-SQLAlchemy>=3.1
+SQLAlchemy>=2.0
+psycopg2-binary>=2.9  # PostgreSQL adapter for Neon
+Flask-Migrate>=4.0
+Flask-Login>=0.6
+
+# --- Deployment --------------------------------------------------------------
+gunicorn>=21.2
 
 # --- ML / Computer Vision ----------------------------------------------------
 # mediapipe>=0.10.30 required for Python 3.14+ compatibility on Render
