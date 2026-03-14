@@ -301,26 +301,29 @@ def serve_pose_data(pose_name: str, filename: str):
     
     Falls back to placeholder if image doesn't exist.
     """
-    pose_name = secure_filename(pose_name).lower()
-    filename = secure_filename(filename)
+    pose_name = pose_name.strip().lower()
+    filename = filename.strip()
     
     poses_dir = current_app.config["POSES_DIR"]
     if not os.path.isdir(poses_dir):
         logger.debug(f"Poses directory not found: {poses_dir}")
         return "Not found", 404
     
+    # Do not rewrite names via secure_filename; many stored files/folders use spaces and dots.
     pose_dir = os.path.join(poses_dir, pose_name)
     image_path = os.path.join(pose_dir, filename)
     
     # Security check - prevent directory traversal
-    if not os.path.abspath(image_path).startswith(os.path.abspath(poses_dir)):
+    poses_dir_abs = os.path.abspath(poses_dir)
+    image_path_abs = os.path.abspath(image_path)
+    if not image_path_abs.startswith(poses_dir_abs + os.sep):
         logger.warning(f"Directory traversal attempt blocked: {image_path}")
         return "Not found", 404
     
     if os.path.isfile(image_path) and _allowed_file(filename):
         try:
             logger.debug(f"Serving pose image: {image_path}")
-            return send_file(image_path, mimetype="image/png")
+            return send_file(image_path)
         except Exception as e:
             logger.warning(f"Failed to serve pose image {image_path}: {e}")
             return "Not found", 404
