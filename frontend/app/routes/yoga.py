@@ -6,6 +6,8 @@ Here, routes only handle HTTP concerns (parsing forms, rendering templates).
 All ML work is delegated to service functions.
 """
 
+from __future__ import annotations
+
 import os
 import random
 import logging

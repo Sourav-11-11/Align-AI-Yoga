@@ -23,21 +23,32 @@ def _get_mediapipe_pose():
     if _MP_POSE is not None:
         return _MP_POSE
     
-    # Try importing via Python submodule path (works in 0.10.x)
+    # Try direct mediapipe.solutions import (most compatible)
+    try:
+        import mediapipe as mp
+        _MP_POSE = mp.solutions.pose
+        logger.debug("Loaded mediapipe via mp.solutions.pose")
+        return _MP_POSE
+    except (ImportError, AttributeError, ModuleNotFoundError) as e:
+        logger.debug(f"mediapipe.solutions failed: {e}")
+
+    # Try mediapipe.python.solutions (older versions)
     try:
         from mediapipe.python.solutions import pose
         _MP_POSE = pose
+        logger.debug("Loaded mediapipe via mediapipe.python.solutions")
         return _MP_POSE
-    except (ImportError, ModuleNotFoundError):
-        logger.debug("mediapipe.python.solutions not available")
+    except (ImportError, ModuleNotFoundError) as e:
+        logger.debug(f"mediapipe.python.solutions failed: {e}")
 
-    # Try direct mediapipe.solutions (some versions)
+    # Try importing solutions directly
     try:
         from mediapipe import solutions
         _MP_POSE = solutions.pose
+        logger.debug("Loaded mediapipe via solutions.pose")
         return _MP_POSE
-    except (ImportError, AttributeError, ModuleNotFoundError):
-        logger.debug("mediapipe.solutions not available")
+    except (ImportError, AttributeError, ModuleNotFoundError) as e:
+        logger.debug(f"mediapipe.solutions failed: {e}")
 
     raise RuntimeError(
         "Could not import mediapipe pose. Ensure mediapipe>=0.10 is installed."
@@ -60,14 +71,22 @@ def extract_keypoints(
     Returns:
         PoseKeypoints if a body is detected, else None.
     """
-    pose = _get_mediapipe_pose()
+    try:
+        pose = _get_mediapipe_pose()
+    except RuntimeError as e:
+        logger.error(f"Failed to load MediaPipe: {e}")
+        return None
     
-    with pose.Pose(
-        static_image_mode=True,
-        model_complexity=model_complexity,
-        min_detection_confidence=min_detection_confidence,
-    ) as pose_detector:
-        results = pose_detector.process(image_rgb)
+    try:
+        with pose.Pose(
+            static_image_mode=True,
+            model_complexity=model_complexity,
+            min_detection_confidence=min_detection_confidence,
+        ) as pose_detector:
+            results = pose_detector.process(image_rgb)
+    except Exception as e:
+        logger.error(f"MediaPipe processing failed: {e}")
+        return None
 
     if not results.pose_landmarks:
         logger.warning("MediaPipe: no pose landmarks detected.")

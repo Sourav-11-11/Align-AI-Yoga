@@ -7,38 +7,30 @@ Handles import differences across mediapipe versions.
 
 def get_mediapipe_pose():
     """Get mediapipe pose module with compatibility handling."""
+    # Try direct import first (most compatible)
     try:
-        # Try direct import first
-        from mediapipe import solutions
-        return solutions.pose
+        import mediapipe as mp
+        return mp.solutions.pose
     except (ImportError, AttributeError):
         pass
 
     try:
-        # Try Python submodule path
+        # Try Python submodule path (0.10.x)
         from mediapipe.python.solutions import pose
         return pose
     except (ImportError, AttributeError):
         pass
 
     try:
-        # Try importing the module directly
-        import mediapipe
-        if hasattr(mediapipe, 'solutions'):
-            return mediapipe.solutions.pose
-    except (ImportError, AttributeError):
-        pass
-
-    # Last resort: try to access via tasks
-    try:
-        from mediapipe.tasks.python import vision
-        return vision
+        # Try importing solutions directly
+        from mediapipe import solutions
+        return solutions.pose
     except (ImportError, AttributeError):
         pass
 
     raise ImportError(
         "Could not import mediapipe pose module. "
-        "Tried: mediapipe.solutions, mediapipe.python.solutions, mediapipe.tasks.python.vision"
+        "Ensure mediapipe>=0.10 is installed."
     )
 
 
