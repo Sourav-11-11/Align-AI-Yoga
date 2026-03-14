@@ -100,55 +100,59 @@ def yoga1():
             os.makedirs(img_dir, exist_ok=True)
 
             recommended_items = []
-        for pose in recommended_poses:
+            for pose in recommended_poses:
+                pose_dir = os.path.join(poses_dir, pose)
+                if not os.path.isdir(pose_dir):
+                    logger.warning("Pose directory not found: %s", pose_dir)
+                    continue
+                images = [
+                    f for f in os.listdir(pose_dir) if _allowed_file(f)
+                ]
+                if not images:
+                    continue
+                chosen = random.choice(images)
+                shutil.copy(os.path.join(pose_dir, chosen), os.path.join(img_dir, chosen))
+                recommended_items.append({
+                    "image_url": f"/static/img/{chosen}",
+                    "pose_name": pose,
+                    "guide": pose_guides[pose],
+                })
+
+            return render_template(
+                "yoga2.html", items=recommended_items, mood=mood
+            )
+
+        # Prep beginner pose cards for the session page
+        poses_dir = current_app.config["POSES_DIR"]
+        img_dir = os.path.join(current_app.static_folder, "img")
+        os.makedirs(img_dir, exist_ok=True)
+        beginner_guides = get_pose_guides(_BEGINNER_POSES)
+        beginner_items = []
+        for pose in _BEGINNER_POSES:
             pose_dir = os.path.join(poses_dir, pose)
             if not os.path.isdir(pose_dir):
-                logger.warning("Pose directory not found: %s", pose_dir)
+                logger.warning("Beginner pose dir not found: %s", pose_dir)
                 continue
-            images = [
-                f for f in os.listdir(pose_dir) if _allowed_file(f)
-            ]
+            images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
             if not images:
                 continue
             chosen = random.choice(images)
             shutil.copy(os.path.join(pose_dir, chosen), os.path.join(img_dir, chosen))
-            recommended_items.append({
+            beginner_items.append({
                 "image_url": f"/static/img/{chosen}",
                 "pose_name": pose,
-                "guide": pose_guides[pose],
+                "guide": beginner_guides[pose],
             })
 
         return render_template(
-            "yoga2.html", items=recommended_items, mood=mood
+            "yoga1.html",
+            moods=recommender.available_moods,
+            beginner_items=beginner_items,
         )
-
-    # Prep beginner pose cards for the session page
-    poses_dir = current_app.config["POSES_DIR"]
-    img_dir = os.path.join(current_app.static_folder, "img")
-    os.makedirs(img_dir, exist_ok=True)
-    beginner_guides = get_pose_guides(_BEGINNER_POSES)
-    beginner_items = []
-    for pose in _BEGINNER_POSES:
-        pose_dir = os.path.join(poses_dir, pose)
-        if not os.path.isdir(pose_dir):
-            logger.warning("Beginner pose dir not found: %s", pose_dir)
-            continue
-        images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
-        if not images:
-            continue
-        chosen = random.choice(images)
-        shutil.copy(os.path.join(pose_dir, chosen), os.path.join(img_dir, chosen))
-        beginner_items.append({
-            "image_url": f"/static/img/{chosen}",
-            "pose_name": pose,
-            "guide": beginner_guides[pose],
-        })
-
-    return render_template(
-        "yoga1.html",
-        moods=recommender.available_moods,
-        beginner_items=beginner_items,
-    )
+    except Exception as e:
+        logger.error(f"Error in yoga1: {str(e)}")
+        flash("Error loading yoga session. Please try again.", "error")
+        return redirect(url_for("yoga.home"))
 
 
 # ── Step 2: User uploads pose image → Correction feedback ────────────────────
