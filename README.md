@@ -1,102 +1,399 @@
-# 🧘 Align AI Yoga — Intelligent Pose Analysis & Recommendations
+# 🧘 Align AI Yoga — AI-Powered Yoga Pose Analysis
 
-> **Real-time yoga pose correction + mood-adaptive recommendations** using computer vision and machine learning. Full-stack application with unified scoring architecture.
+**Free Portfolio-Ready Web App** deployed on Render with a PostgreSQL database on Neon
 
----
-
-## 🎯 What It Does
-
-✅ **Real-Time Pose Analysis** — Analyzes yoga form via webcam/image using MediaPipe (33 landmarks)  
-✅ **Smart Feedback** — Joint angle analysis (shoulder, elbow, hip, knee) with corrections  
-✅ **Mood Recommendations** — SVD-based collaborative filtering suggests poses matching your mood  
-✅ **Progress Tracking** — Dashboard with session history, annotated images, and feedback  
-✅ **Consistent Scoring** — Unified config ensures webcam and image modes produce comparable results  
+> Smart yoga posture correction with AI-powered pose detection, progress tracking, and mood-based recommendations. Built with Flask, SQLAlchemy, and deployed for free on Render.
 
 ---
 
-## 💡 Why It Matters
+## ✨ Features
 
-**Problem:** Musicians lack real-time form correction without in-person coaching  
-**Solution:** AI-powered analysis + personalized mood-based recommendations = accessible guidance
-
----
-
-## 🌟 Key Features
-
-| Feature | Details |
-|---------|---------|
-| **Pose Correction** | 4-joint angle calculation vs 70+ calibrated references |
-| **Recommendations** | ML-powered (SVD), learns from user mood data |
-| **Dashboard** | Session history, filters, annotated images |
-| **Scoring** | Fixed thresholds (Perfect 100 → Minor 85 → Moderate 65 → Major 35) |
-| **Architecture** | Centralized config ensures frontend/backend alignment |
+✅ **User Authentication** — Secure registration & login with password hashing  
+✅ **Pose Detection** — Real-time yoga pose analysis  
+✅ **Progress Dashboard** — Track your practice stats and improvements  
+✅ **Pose Library** — Browse 50+ yoga poses with difficulty levels  
+✅ **Session History** — Save and review past practice attempts  
+✅ **AI Recommendations** — Get personalized yoga pose suggestions  
+✅ **Mobile Friendly** — Responsive design works on all devices  
 
 ---
 
-## 🔧 Tech Stack
+## 🏗️ Architecture
 
-| Component | Technology |
-|-----------|-----------|
-| **Frontend** | HTML5, CSS3, JavaScript |
-| **Backend** | Flask (Python 3.11) |
-| **ML/CV** | MediaPipe, OpenCV, NumPy, Scikit-learn (SVD) |
-| **Database** | MySQL |
-| **Deployment** | Render.com |
+### Modern Stack
+- **Framework**: Flask 3.1 (Python)
+- **Database**: PostgreSQL via SQLAlchemy ORM
+- **Authentication**: Flask-Login with password hashing
+- **Deployment**: Render (always-on free tier)
+- **Server**: Gunicorn (production), Flask dev server (local)
 
----
-
-## 📊 ML Pipeline
-
-1. **Input:** Webcam/image (480–1080p)
-2. **Detection:** MediaPipe extracts 33 body landmarks
-3. **Calculation:** Compute 4 joint angles
-4. **Scoring:** Compare to 70+ calibrated references
-5. **Output:** Feedback + annotated image
-
-**Performance:** ~95% accuracy, <200ms response time
+### Cost: $0/month
+- Render: Free tier (512 MB RAM)
+- Neon PostgreSQL: Free tier (3 GB storage)
 
 ---
 
-## 🗂️ Project Structure
+## 📁 Project Structure
 
 ```
 align-ai-yoga/
-├── FRONT END/
-│   ├── app/                    # Flask app (routes, services)
-│   ├── ml/                     # ML logic (evaluation_config.py is key)
-│   ├── static/                 # Frontend assets (JS, CSS)
-│   ├── templates/              # HTML templates
-│   ├── requirements.txt
-│   └── run.py
-├── BACK END/                   # Notebooks (analysis, recommendations)
-├── Procfile                    # Render deployment config
-├── runtime.txt                 # Python 3.11.7
-└── .env.example               # Environment template
+├── app/                           # Flask application
+│   ├── __init__.py               # App factory (create_app)
+│   ├── config.py                 # Dev/Prod configuration
+│   ├── extensions.py             # SQLAlchemy & Flask-Login
+│   │
+│   ├── models/
+│   │   └── __init__.py           # Database models (User, YogaPose, etc.)
+│   │
+│   ├── routes/
+│   │   ├── auth.py               # Login, register, logout
+│   │   ├── yoga.py               # Pose detection & history
+│   │   └── dashboard.py          # User dashboard
+│   │
+│   ├── templates/                # HTML pages (your existing ones!)
+│   ├── static/                   # CSS, JS, images
+│   └── services/                 # Business logic (future)
+│
+├── wsgi.py                       # Production entry point (gunicorn)
+├── run.py                        # Local development entry point
+├── manage.py                     # Database setup helper
+├── render.sh                     # Render build script
+├── Procfile                      # Render deployment config
+├── requirements.txt              # Python dependencies
+├── .env.example                  # Environment template
+│
+├── BACKEND_STRUCTURE.md          # Backend architecture docs
+├── DEPLOYMENT_NEON_RENDER.md     # Step-by-step deployment guide
+└── README.md                     # This file
 ```
-
-**Key File:** `ml/evaluation_config.py` — Unified thresholds ensure scoring consistency
 
 ---
 
-## 🚀 Deploy in 3 Steps
+## 🚀 Quick Start
 
-### 1. Push to GitHub
+### 1. Local Development
+
 ```bash
-git add .
-git commit -m "Deploy to Render"
-git push origin main
+# Install dependencies
+pip install -r requirements.txt
+
+# Create .env file
+cp .env.example .env
+# Edit .env with your local database
+
+# Initialize database
+python manage.py init
+python manage.py seed
+
+# Run locally
+python run.py
 ```
 
-### 2. Create Render App
-- Go to https://render.com
-- Connect GitHub repository
-- Select `FRONT END` directory as root
-- Add environment variables from `.env.example`
+Open http://localhost:5000
 
-### 3. Go Live
-- Render auto-deploys ~2 mins
-- Get your URL: `https://align-ai-yoga.onrender.com`
-- Add custom domain (optional)
+### 2. Deploy on Render + Neon (Free)
+
+**See [DEPLOYMENT_NEON_RENDER.md](DEPLOYMENT_NEON_RENDER.md) for complete instructions**
+
+Brief steps:
+1. Create free PostgreSQL database on [Neon](https://neon.tech)
+2. Push code to GitHub
+3. Deploy on [Render](https://render.com) with DATABASE_URL
+4. Done! ✅
+
+---
+
+## 💾 Database Models
+
+### User
+```python
+id, name, email, password_hash, created_at, updated_at
+```
+
+### YogaPose
+```python
+id, pose_name, sanskrit_name, description, difficulty_level,
+benefits, precautions, duration_seconds, image_url, created_at
+```
+
+### UserPoseHistory
+```python
+id, user_id, pose_id, accuracy_score, duration_seconds,
+feedback, image_path, performed_at
+```
+
+### Recommendation
+```python
+id, user_id, recommended_pose_ids (JSON),
+recommendation_reason, generated_at, expires_at, viewed
+```
+
+---
+
+## 🔐 Authentication
+
+- **Registration**: Email + password
+- **Password Hash**: Werkzeug's PBKDF2-SHA256
+- **Session**: Flask-Login with secure cookies
+- **Protected Routes**: `@login_required` decorator
+
+```python
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html', user=current_user)
+```
+
+---
+
+## 📚 API Routes
+
+| Endpoint | Method | Auth | Purpose |
+|----------|--------|------|---------|
+| `/` | GET | No | Home page |
+| `/auth/register` | POST | No | Create account |
+| `/auth/login` | POST | No | Log in |
+| `/auth/logout` | GET | Yes | Log out |
+| `/dashboard/home` | GET | Yes | Main dashboard |
+| `/dashboard/stats` | GET | Yes | Detailed stats |
+| `/yoga/poses` | GET | Yes | Pose library |
+| `/yoga/pose/<id>` | GET | Yes | Pose details |
+| `/yoga/detect` | GET | Yes | Pose detection UI |
+| `/yoga/history` | GET | Yes | Practice history |
+
+---
+
+## 🎛️ Configuration
+
+### Environment Variables
+
+```
+FLASK_ENV=development              # or 'production'
+SECRET_KEY=<32-char-hex-string>   # Generate: python -c "import secrets; print(secrets.token_hex(32))"
+DATABASE_URL=postgresql://...      # From Neon or local
+```
+
+### Dev vs. Production
+
+**Development** (config.py):
+- Debug = True
+- Localhost database
+- Secure cookies disabled
+
+**Production** (Render):
+- Debug = False
+- DATABASE_URL from env var
+- Secure cookies required
+- Error logging enabled
+
+---
+
+## 🛠️ Management Commands
+
+```bash
+# Initialize database tables
+python manage.py init
+
+# Add sample yoga poses
+python manage.py seed
+
+# Create admin user
+python manage.py create-admin admin@test.com password123 "Admin"
+```
+
+---
+
+## 📝 Database Setup
+
+### Local PostgreSQL
+
+```bash
+# Install PostgreSQL (macOS)
+brew install postgresql@15
+
+# Start postgres
+brew services start postgresql@15
+
+# Create database
+createdb align_yoga_dev
+
+# Set DATABASE_URL
+export DATABASE_URL="postgresql://postgres@localhost:5432/align_yoga_dev"
+
+# Initialize tables
+python manage.py init
+```
+
+### Production (Neon)
+
+```bash
+# Create free project on neon.tech
+# Copy connection string: postgresql://user:pass@host/db
+
+# Set environment variable
+export DATABASE_URL="postgresql://user:pass@host/db"
+
+# Initialize tables on Render (see deployment guide)
+```
+
+---
+
+## 🧪 Testing (Local)
+
+```bash
+# Register
+1. Go to http://localhost:5000/auth/register
+2. Create account: test@example.com / password123
+
+# Login
+3. Go to http://localhost:5000/auth/login
+4. Enter credentials
+
+# Dashboard
+5. See your stats and pose recommendations
+
+# Pose List
+6. Browse available yoga poses
+
+# History
+7. View your practice session history
+```
+
+---
+
+## 🚢 Production Deployment
+
+### Render Deployment
+
+1. **Connect GitHub repo**
+   - Go to render.com
+   - New Web Service
+   - Select align-ai-yoga repo
+
+2. **Configure Build**
+   - Build command: `bash render.sh`
+   - Start command: `gunicorn wsgi:app` (auto-set)
+
+3. **Set Environment Variables**
+   - DATABASE_URL (from Neon)
+   - SECRET_KEY (generate random)
+   - FLASK_ENV = production
+
+4. **Deploy**
+   - Render builds & starts your app
+   - Get URL: https://your-app.onrender.com
+   - Share with recruiters! 🎉
+
+---
+
+## 🔍 Troubleshooting
+
+### "No module named 'app'"
+```
+ModuleNotFoundError: No module named 'app'
+```
+**Fix**: Run from project root:
+```bash
+cd /path/to/align-ai-yoga
+python run.py
+```
+
+### "Database connection failed"
+```
+psycopg2.OperationalError: connection failed
+```
+**Fix**: Check DATABASE_URL in .env or Render:
+```bash
+# Test local connection
+psql $DATABASE_URL
+```
+
+### "Table doesn't exist"
+```
+ProgrammingError: relation "users" does not exist
+```
+**Fix**: Initialize database:
+```bash
+python manage.py init
+```
+
+### "Port 5000 already in use"
+```
+OSError: [Errno 48] Address already in use
+```
+**Fix**: Kill process or change port in run.py
+
+---
+
+## 📚 Documentation
+
+- **[BACKEND_STRUCTURE.md](BACKEND_STRUCTURE.md)** — Technical architecture & models
+- **[DEPLOYMENT_NEON_RENDER.md](DEPLOYMENT_NEON_RENDER.md)** — Complete deployment guide
+- **Flask Docs**: https://flask.palletsprojects.com
+- **SQLAlchemy Docs**: https://docs.sqlalchemy.org
+
+---
+
+## 🎯 Roadmap
+
+- [ ] Real-time pose detection with MediaPipe
+- [ ] Video upload & pose verification
+- [ ] AI recommendations based on history
+- [ ] Social features (follow users, leaderboard)
+- [ ] Workout plans (7-day programs)
+- [ ] Email notifications
+- [ ] Mobile app (React Native)
+- [ ] Instructor view (manage student progress)
+
+---
+
+## 📄 License
+
+MIT License — Use freely for portfolio projects
+
+---
+
+## 🤝 Contributing
+
+Pull requests welcome! Areas for contribution:
+- [ ] Additional yoga poses (500+ catalog)
+- [ ] Frontend UI improvements
+- [ ] ML model optimization
+- [ ] Testing suite
+- [ ] Documentation
+
+---
+
+## ❓ FAQ
+
+**Q: Is it free to deploy?**
+A: Yes! Render free tier + Neon free tier = $0/month
+
+**Q: How long does deployment take?**
+A: ~3-5 minutes for first build, then instant deployments
+
+**Q: Can I use my own domain?**
+A: Yes! Add custom domain in Render dashboard ($0.10/mo)
+
+**Q: How much data can I store?**
+A: Neon free tier gives 3 GB — plenty for portfolios!
+
+**Q: Will it sleep/pause?**
+A: Render free tier sleeps after 15 mins of inactivity (okay for portfolio)
+
+**Q: How do I add features?**
+A: Edit app/routes/ files, test locally, push to GitHub, Render auto-deploys
+
+---
+
+## 🐛 Report Issues
+
+Found a bug? Create an issue on GitHub or email: sourav@example.com
+
+---
+
+**Built for recruiters. Deployed for free. Ready for portfolio.** 🚀
+
 
 **Cost:** Free for hobby; $7+/month for custom domain
 
