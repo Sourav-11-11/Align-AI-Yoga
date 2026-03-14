@@ -21,6 +21,7 @@ from flask import (
     current_app,
     url_for,
     jsonify,
+    send_file,
 )
 from werkzeug.utils import secure_filename
 
@@ -94,26 +95,26 @@ def yoga1():
             
             pose_guides = get_pose_guides(recommended_poses)
 
-            # Copy one reference image per pose into static/img for display
-            poses_dir = current_app.config["POSES_DIR"]
-            img_dir = os.path.join(current_app.static_folder, "img")
-            os.makedirs(img_dir, exist_ok=True)
-
+            # Build recommended pose items (images optional if data folder missing)
             recommended_items = []
             for pose in recommended_poses:
-                pose_dir = os.path.join(poses_dir, pose)
-                if not os.path.isdir(pose_dir):
-                    logger.warning("Pose directory not found: %s", pose_dir)
-                    continue
-                images = [
-                    f for f in os.listdir(pose_dir) if _allowed_file(f)
-                ]
-                if not images:
-                    continue
-                chosen = random.choice(images)
-                shutil.copy(os.path.join(pose_dir, chosen), os.path.join(img_dir, chosen))
+                # Try to find image, but don't fail if data folder is missing
+                image_url = None
+                poses_dir = current_app.config["POSES_DIR"]
+                if os.path.isdir(poses_dir):
+                    pose_dir = os.path.join(poses_dir, pose)
+                    if os.path.isdir(pose_dir):
+                        images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
+                        if images:
+                            chosen = random.choice(images)
+                            image_url = f"/data/{pose}/{chosen}"
+                
+                # Use placeholder if no image found
+                if not image_url:
+                    image_url = "/static/img/yoga-placeholder.svg"
+                    
                 recommended_items.append({
-                    "image_url": f"/static/img/{chosen}",
+                    "image_url": image_url,
                     "pose_name": pose,
                     "guide": pose_guides[pose],
                 })
@@ -124,22 +125,25 @@ def yoga1():
 
         # Prep beginner pose cards for the session page
         poses_dir = current_app.config["POSES_DIR"]
-        img_dir = os.path.join(current_app.static_folder, "img")
-        os.makedirs(img_dir, exist_ok=True)
         beginner_guides = get_pose_guides(_BEGINNER_POSES)
         beginner_items = []
         for pose in _BEGINNER_POSES:
-            pose_dir = os.path.join(poses_dir, pose)
-            if not os.path.isdir(pose_dir):
-                logger.warning("Beginner pose dir not found: %s", pose_dir)
-                continue
-            images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
-            if not images:
-                continue
-            chosen = random.choice(images)
-            shutil.copy(os.path.join(pose_dir, chosen), os.path.join(img_dir, chosen))
+            # Try to find image, but don't fail if data folder is missing
+            image_url = None
+            if os.path.isdir(poses_dir):
+                pose_dir = os.path.join(poses_dir, pose)
+                if os.path.isdir(pose_dir):
+                    images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
+                    if images:
+                        chosen = random.choice(images)
+                        image_url = f"/data/{pose}/{chosen}"
+            
+            # Use placeholder if no image found
+            if not image_url:
+                image_url = "/static/img/yoga-placeholder.svg"
+                
             beginner_items.append({
-                "image_url": f"/static/img/{chosen}",
+                "image_url": image_url,
                 "pose_name": pose,
                 "guide": beginner_guides[pose],
             })
@@ -290,3 +294,33 @@ def pose_reference_api():
             "scoring_weights": config["scoring_weights"],
         }
     )
+
+
+@yoga_bp.route("/data/<pose_name>/<filename>")
+def serve_pose_data(pose_name: str, filename: str):
+    """Serve pose images from data folder if available.
+    
+    Falls back to placeholder if image doesn't exist.
+    """
+    pose_name = secure_filename(pose_name).replace("-", " ").title()
+    filename = secure_filename(filename)
+    
+    poses_dir = current_app.config["POSES_DIR"]
+    if not os.path.isdir(poses_dir):
+        return "Not found", 404
+    
+    pose_dir = os.path.join(poses_dir, pose_name)
+    image_path = os.path.join(pose_dir, filename)
+    
+    # Security check - prevent directory traversal
+    if not os.path.abspath(image_path).startswith(os.path.abspath(poses_dir)):
+        return "Not found", 404
+    
+    if os.path.isfile(image_path) and _allowed_file(filename):
+        try:
+            return send_file(image_path, mimetype="image/jpeg")
+        except Exception as e:
+            logger.warning(f"Failed to serve pose image: {e}")
+            return "Not found", 404
+    
+    return "Not found", 404
