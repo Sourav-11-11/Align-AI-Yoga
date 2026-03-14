@@ -56,6 +56,30 @@ def _allowed_file(filename: str) -> bool:
     )
 
 
+def _normalize_pose_name_for_folder(pose_name: str) -> str:
+    """Normalize pose names to match folder naming convention in frontend/data."""
+    return pose_name.strip().lower()
+
+
+def _build_pose_image_url(pose_name: str) -> str:
+    """Return a random pose image URL or placeholder if unavailable."""
+    poses_dir = current_app.config["POSES_DIR"]
+    if not os.path.isdir(poses_dir):
+        return "/static/img/yoga-placeholder.svg"
+
+    folder_pose_name = _normalize_pose_name_for_folder(pose_name)
+    pose_dir = os.path.join(poses_dir, folder_pose_name)
+    if not os.path.isdir(pose_dir):
+        return "/static/img/yoga-placeholder.svg"
+
+    images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
+    if not images:
+        return "/static/img/yoga-placeholder.svg"
+
+    chosen = random.choice(images)
+    return url_for("yoga.serve_pose_data", pose_name=folder_pose_name, filename=chosen)
+
+
 # ── Home ──────────────────────────────────────────────────────────────────────
 
 @yoga_bp.route("/home")
@@ -99,20 +123,7 @@ def yoga1():
             # Build recommended pose items (images optional if data folder missing)
             recommended_items = []
             for pose in recommended_poses:
-                # Try to find image, but don't fail if data folder is missing
-                image_url = None
-                poses_dir = current_app.config["POSES_DIR"]
-                if os.path.isdir(poses_dir):
-                    pose_dir = os.path.join(poses_dir, pose)
-                    if os.path.isdir(pose_dir):
-                        images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
-                        if images:
-                            chosen = random.choice(images)
-                            image_url = f"/data/{pose}/{chosen}"
-                
-                # Use placeholder if no image found
-                if not image_url:
-                    image_url = "/static/img/yoga-placeholder.svg"
+                image_url = _build_pose_image_url(pose)
                     
                 recommended_items.append({
                     "image_url": image_url,
@@ -125,23 +136,10 @@ def yoga1():
             )
 
         # Prep beginner pose cards for the session page
-        poses_dir = current_app.config["POSES_DIR"]
         beginner_guides = get_pose_guides(_BEGINNER_POSES)
         beginner_items = []
         for pose in _BEGINNER_POSES:
-            # Try to find image, but don't fail if data folder is missing
-            image_url = None
-            if os.path.isdir(poses_dir):
-                pose_dir = os.path.join(poses_dir, pose)
-                if os.path.isdir(pose_dir):
-                    images = [f for f in os.listdir(pose_dir) if _allowed_file(f)]
-                    if images:
-                        chosen = random.choice(images)
-                        image_url = f"/data/{pose}/{chosen}"
-            
-            # Use placeholder if no image found
-            if not image_url:
-                image_url = "/static/img/yoga-placeholder.svg"
+            image_url = _build_pose_image_url(pose)
                 
             beginner_items.append({
                 "image_url": image_url,
