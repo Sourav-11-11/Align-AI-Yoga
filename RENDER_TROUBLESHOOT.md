@@ -1,74 +1,151 @@
 # Render Deployment Troubleshooting
 
-## Issue: No Images Showing on Render
+## Issue: Placeholder Images Instead of Pose Photos
 
-**Solution:** The app now gracefully handles missing pose images by showing placeholders. Pose descriptions and guides still display correctly.
+**Why This Happens:**
+- Pose images in `frontend/data/` are .gitignored (too large for git)
+- Render doesn't have these images, so placeholders show instead
+- **This is expected behavior** - descriptions still show perfectly
 
-- If you have pose images in a `data/` folder locally, they won't be stored on Render (git ignores them)
-- Instead, placeholders are shown with full pose guides from `dataset/pose_guides.json`
-- To add images to Render, upload them to a persistent storage service or include them in git
+**Solution Options:**
+
+1. **Use Placeholders (Current - Recommended)**
+   - All pose descriptions display from `pose_guides.json`
+   - Placeholders are styled consistently
+   - Lightweight and fast
+   - ✅ Best for free tier Render deployment
+
+2. **Upload Images Manually to Render**
+   - SSH into Render service
+   - Upload pose image folders to `/var/data/frontend/data/`
+   - Persist across restarts via Render settings
+   - Note: Requires restart after upload
+
+3. **Host Images on CDN**
+   - Upload to AWS S3, Cloudinary, or similar
+   - Update `POSES_DIR` config to CDN URL
+   - Images download on demand
 
 ## Issue: Webcam Not Initializing
 
+**Symptoms:** Button shows "Initializing webcam..." forever
+
 **Causes & Solutions:**
 
-1. **Browser Permissions**
-   - Allow camera access when prompted
-   - Check browser settings: Settings → Privacy → Camera
-   - Ensure app is accessed via HTTPS (Render provides this)
+### 1. Browser Permissions
+- [ ] Allow camera access when prompted
+- [ ] Check Settings → Privacy → Camera  
+- [ ] Ensure HTTPS (Render provides this automatically)
 
-2. **HTTPS Required**
-   - `navigator.mediaDevices.getUserMedia()` requires HTTPS in production
-   - Render automatically provides HTTPS for free tier apps ✓
+### 2. MediaPipe CDN
+- Loads from `https://cdn.jsdelivr.net/npm/@mediapipe/pose/`
+- If blocked by network: won't load
+- Check browser console (F12 → Console)
 
-3. **Silent Failures**
-   - Check browser console (F12 → Console tab) for errors
-   - Status will show: "Error: Could not access webcam"
-
-4. **Network/CDN Issues**
-   - MediaPipe loads from CDN: `https://cdn.jsdelivr.net/npm/@mediapipe/pose/`
-   - Check if CDN is accessible from your region
-   - Fallback: error message displays "MediaPipe Pose library not loaded"
+### 3. Render Service Issue
+If you see server error with "Could not import mediapipe pose":
+- This means MediaPipe failed during deployment
+- **Fix:** Restart Render service or redeploy
+- Check `runtime.txt` has `python-3.11.7`
 
 ## Issue: Image Upload Fails
 
-**Solution:** Check these settings in your `.env`:
+**Error:** `{"error":"Server Error","message":"Could not import mediapipe pose..."}`
 
-```ini
-SAVED_IMAGES_DIR=/tmp/yoga_uploads  # Render's /tmp is ephemeral but sufficient for uploads
-ALLOWED_EXTENSIONS=jpg,jpeg,png
+**Solutions:**
+
+1. **Restart Render**
+   - Render dashboard → Manual → Restart
+   - Wait 2 minutes, try again
+
+2. **Redeploy Latest**
+   - `git push origin main`
+   - Render auto-deploys
+   - View build logs for status
+
+3. **Check Python Version**
+   - Verify `runtime.txt` contains: `python-3.11.7`
+   - Redeploy if changed
+
+## Issue: Dashboard Shows No History
+
+**If uploads aren't saved:**
+
+1. Check SQLite path
+   - Should persist to `/var/data/` on Render
+   - Automatic across restarts
+
+2. Test locally
+   - `cd frontend && python run.py`
+   - Upload an image
+   - Verify Dashboard shows it
+
+3. Check schema
+   - Tables auto-created: `users`, `yoga_sessions`
+   - Auto-migrations on startup
+
+## Quick Verification Checklist
+
+- [ ] Home page loads (register → login → logout)
+- [ ] Yoga page shows 3 beginner poses + descriptions
+- [ ] Select mood → see 3 recommendations + guides
+- [ ] Analyze page → pose selector appears
+- [ ] Camera permission prompt appears (allow or deny)
+- [ ] Image upload processes (error or success)
+- [ ] Dashboard shows session history
+- [ ] Chatbot responds
+
+## Testing on Render
+
+**Test Account:**
+```
+Email: demo@example.com
+Password: demo123
 ```
 
-## Testing Locally
+**Test Steps:**
+1. Register new account
+2. Go Yoga → See beginner poses (placeholders + descriptions)
+3. Select mood → Get recommendations with guides
+4. Click Analyze → Try webcam (or skip/upload image)
+5. Check Dashboard for sessions
+6. Test Chatbot
 
-Before deploying, run locally:
+## MediaPipe Troubleshooting
 
-```bash
-cd Align-AI-Yoga
-python test_flows.py  # Tests all routes locally
-```
+MediaPipe 0.10.32 requires Python 3.11 on Linux (Render's OS).
 
-## Verifying on Render
+**If MediaPipe import fails:**
 
-1. Log in with test account
-2. Go to **Yoga** → **Step 1** → See beginner poses with guide
-3. Select mood → See recommendations with guide text
-4. Click **Analyze** → Select pose → Test webcam button
-5. If webcam prompts: **Allow** camera access
-6. Check console (F12) for any errors
+1. **First try:** Restart Render service
+   - Render dashboard → Manual → Restart
+   - This usually resolves transient issues
 
-## Known Limitations
+2. **Then try:** Redeploy code
+   - `git commit --allow-empty -m "redeploy"`
+   - `git push origin main`
+   - Wait for build to complete
 
-- Pose image data folder not included (large files)
-- Webcam requires browser permission grant
-- MediaPipe CDN required for live analysis
-- Render free tier: 50 hours/month, restarts frequently
+3. **Alternative:** Use lightweight MediaPipe
+   - Update `requirements.txt`
+   - Change `mediapipe>=0.10.30` to `mediapipe-lite`
+   - Redeploy
 
-## Dashboard Issue
+## Advanced: Check Render Logs
 
-If Dashboard shows no history after upload:
+1. Render dashboard → Logs
+2. Look for during deploy:
+   - `Successfully installed mediapipe-0.10.32`
+   - `Running 'python frontend/run.py'`
+3. Look for during errors:
+   - `Could not import mediapipe`
+   - `ImportError` or `ModuleNotFoundError`
 
-1. Check browser console for SQL errors
-2. Verify database connection: `SQLITE_DB_PATH` env var is set
-3. Render persists SQLite in `/var/data/` (check `Procfile` for path)
+## Known Limits
+
+- Free tier: 50 compute hours/month
+- Spin-down after 15 min inactivity (cold start ~30s)
+- SQLite persists in `/var/data/`
+- Images are ephemeral in `/tmp/`
+- No webcam on server (browser-side only)
 
