@@ -9,7 +9,7 @@ import logging
 import numpy as np
 from typing import Dict, Optional, Tuple
 
-from mediapipe.python.solutions import pose
+from mediapipe.solutions import pose
 
 from .types import PoseKeypoints
 
