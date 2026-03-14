@@ -4,8 +4,6 @@ Mediapipe compatibility layer for different versions.
 Handles import differences across mediapipe versions.
 """
 
-import sys
-
 
 def get_mediapipe_pose():
     """Get mediapipe pose module with compatibility handling."""

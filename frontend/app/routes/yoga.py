@@ -8,7 +8,6 @@ All ML work is delegated to service functions.
 
 import os
 import random
-import shutil
 import logging
 
 from flask import (
