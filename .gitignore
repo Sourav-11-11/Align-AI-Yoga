@@ -5,10 +5,9 @@ __pycache__/
 *.pyd
 .pytest_cache/
 .pytype/
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb_checkpoints
+*.egg-info/
+dist/
+build/
 
 # Virtual environments
 venv/
@@ -18,40 +17,60 @@ ENV/
 ENV.bak/
 venv.bak/
 
-# Environment variables — never commit secrets
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables (NEVER commit .env with real secrets!)
 .env
 .env.local
 .env.*.local
-*.env
 
-# Logs
-*.log
-logs/
-
-# Database files (SQLite, MySQL dumps, etc.)
+# Database
 *.db
 *.sqlite
 *.sqlite3
 
-# ML model weights (large binary files)
+# ML Model artifacts
 *.pt
-*.weights
+*.pth
 *.h5
 *.onnx
-*.cfg
 *.pkl
 *.pickle
 *.joblib
-*.pth
+*.weights
 *.model
 
-# TensorFlow/Keras cache
+# TensorFlow/Keras
 .keras/
 __tf_models/
 
-# Generated / uploaded images — store only the .gitkeep placeholder
+# Log files
+*.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Uploaded images (keep directory, not files)
 frontend/static/saved_images/*
 !frontend/static/saved_images/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project-specific
+frontend/align_yoga.db
+.venv/
+frontend/data/*
+!frontend/data/.gitkeep
 
 # Pose reference image dataset (large, not source code)
 frontend/data/
