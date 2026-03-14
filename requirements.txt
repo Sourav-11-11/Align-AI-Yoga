@@ -5,11 +5,9 @@ werkzeug>=3.0
 requests>=2.31
 
 # --- Database ----------------------------------------------------------------
-Flask-SQLAlchemy>=3.1
-SQLAlchemy>=2.0
-psycopg2-binary>=2.9  # PostgreSQL adapter for Neon
-Flask-Migrate>=4.0
-Flask-Login>=0.6
+# Using SQLite by default (built-in, no external dependency)
+# Optional: uncomment for MySQL support
+# mysql-connector-python>=8.0
 
 # --- Deployment --------------------------------------------------------------
 gunicorn>=21.2

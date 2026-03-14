@@ -46,8 +46,18 @@ def create_app(env: str = "default") -> Flask:
         @app.teardown_appcontext
         def close_db(exception=None):
             db = g.pop("db", None)
-            if db is not None and db.is_connected():
-                db.close()
+            if db is not None:
+                try:
+                    # Handle both SQLite and MySQL connections
+                    if hasattr(db, 'is_connected'):
+                        # MySQL connection
+                        if db.is_connected():
+                            db.close()
+                    else:
+                        # SQLite connection
+                        db.close()
+                except Exception as e:
+                    logger.warning(f"Error closing database connection: {e}")
 
         # Error handler for 500 Internal Server Error
         @app.errorhandler(500)

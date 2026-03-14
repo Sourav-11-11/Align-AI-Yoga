@@ -16,6 +16,17 @@ class Config:
     SECRET_KEY: str = os.getenv("SECRET_KEY", "dev-secret-change-in-production")
 
     # ── Database ──────────────────────────────────────────────────────────────
+    # DB_TYPE can be "sqlite" or "mysql"
+    DB_TYPE: str = os.getenv("DB_TYPE", "sqlite")
+    
+    # SQLite settings (used when DB_TYPE="sqlite")
+    SQLITE_DB_PATH: str = os.getenv("SQLITE_DB_PATH", 
+                                     os.path.join(
+                                         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                                         "align_yoga.db"
+                                     ))
+    
+    # MySQL settings (used when DB_TYPE="mysql")
     DB_HOST: str = os.getenv("DB_HOST", "localhost")
     DB_USER: str = os.getenv("DB_USER", "root")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD", "")
@@ -49,6 +60,8 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG: bool = False
+    # Use SQLite by default in production for zero-dependency deployment
+    DB_TYPE: str = os.getenv("DB_TYPE", "sqlite")
 
 
 config = {
