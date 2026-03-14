@@ -1,1 +1,1 @@
-web: gunicorn wsgi:app
+web: cd frontend && gunicorn -w 1 -b 0.0.0.0:$PORT --timeout 60 wsgi:app

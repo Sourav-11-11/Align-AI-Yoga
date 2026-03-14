@@ -28,6 +28,11 @@ venv.bak/
 *.log
 logs/
 
+# Database files (SQLite, MySQL dumps, etc.)
+*.db
+*.sqlite
+*.sqlite3
+
 # ML model weights (large binary files)
 *.pt
 *.weights

@@ -155,6 +155,10 @@ def execute(query: str, values: tuple = ()) -> None:
     """Run a write query (INSERT / UPDATE / DELETE)."""
     db = get_db()
     
+    # Convert MySQL %s placeholders to SQLite ? if needed
+    if isinstance(db, sqlite3.Connection):
+        query = _convert_query_placeholders(query, values)
+    
     if isinstance(db, sqlite3.Connection):
         cursor = db.cursor()
     else:
@@ -178,6 +182,11 @@ def execute(query: str, values: tuple = ()) -> None:
 def fetchall(query: str, values: tuple = ()) -> list:
     """Run a SELECT and return all matching rows."""
     db = get_db()
+    
+    # Convert MySQL %s placeholders to SQLite ? if needed
+    if isinstance(db, sqlite3.Connection):
+        query = _convert_query_placeholders(query, values)
+    
     cursor = db.cursor()
     try:
         cursor.execute(query, values)
@@ -194,6 +203,11 @@ def fetchall(query: str, values: tuple = ()) -> list:
 def fetchone(query: str, values: tuple = ()) -> "tuple | None":
     """Run a SELECT and return the first matching row (or None)."""
     db = get_db()
+    
+    # Convert MySQL %s placeholders to SQLite ? if needed
+    if isinstance(db, sqlite3.Connection):
+        query = _convert_query_placeholders(query, values)
+    
     cursor = db.cursor()
     try:
         cursor.execute(query, values)
@@ -205,4 +219,14 @@ def fetchone(query: str, values: tuple = ()) -> "tuple | None":
         raise
     finally:
         cursor.close()
+
+
+def _convert_query_placeholders(query: str, values: tuple) -> str:
+    """Convert MySQL %s placeholders to SQLite ?
+    
+    This allows routes written for MySQL to work with SQLite.
+    """
+    # Simple conversion: replace %s with ?
+    # This works for most cases but won't handle edge cases like %s inside strings
+    return query.replace('%s', '?')
 
