@@ -1,1 +1,1 @@
-web: cd "frontend" && python run.py
+web: cd frontend && python run.py
