@@ -1,17 +1,17 @@
 # 🧘 Align AI Yoga — AI-Powered Yoga Pose Analysis
 
-**Free Portfolio-Ready Web App** deployed on Render with a PostgreSQL database on Neon
+**Free Portfolio-Ready Web App** deployed on Render with SQLite database (zero external dependencies!)
 
-> Smart yoga posture correction with AI-powered pose detection, progress tracking, and mood-based recommendations. Built with Flask, SQLAlchemy, and deployed for free on Render.
+> Smart yoga posture correction with AI-powered pose detection, progress tracking, and mood-based recommendations. Built with Flask and deployed for free on Render.
 
 ---
 
 ## ✨ Features
 
-✅ **User Authentication** — Secure registration & login with password hashing  
-✅ **Pose Detection** — Real-time yoga pose analysis  
+✅ **User Authentication** — Secure registration & login with Werkzeug hashing  
+✅ **Pose Detection** — Real-time yoga pose analysis with MediaPipe  
 ✅ **Progress Dashboard** — Track your practice stats and improvements  
-✅ **Pose Library** — Browse 50+ yoga poses with difficulty levels  
+✅ **Pose Library** — Browse 80+ yoga poses with difficulty levels  
 ✅ **Session History** — Save and review past practice attempts  
 ✅ **AI Recommendations** — Get personalized yoga pose suggestions  
 ✅ **Mobile Friendly** — Responsive design works on all devices  
@@ -20,16 +20,18 @@
 
 ## 🏗️ Architecture
 
-### Modern Stack
+### Simplified Stack
 - **Framework**: Flask 3.1 (Python)
-- **Database**: PostgreSQL via SQLAlchemy ORM
-- **Authentication**: Flask-Login with password hashing
-- **Deployment**: Render (always-on free tier)
+- **Database**: SQLite (built-in, no external setup needed!)
+- **ML/AI**: MediaPipe for pose detection
+- **Authentication**: Werkzeug password hashing + Flask sessions
+- **Deployment**: Render free tier (~512 MB RAM)
 - **Server**: Gunicorn (production), Flask dev server (local)
 
 ### Cost: $0/month
-- Render: Free tier (512 MB RAM)
-- Neon PostgreSQL: Free tier (3 GB storage)
+- Render: Free tier (512 MB RAM, auto-sleep after 15 min inactivity)
+- Database: SQLite embedded (no separate service)
+- **Total:** Completely free! 🎉
 
 ---
 
@@ -37,17 +39,296 @@
 
 ```
 align-ai-yoga/
-├── app/                           # Flask application
-│   ├── __init__.py               # App factory (create_app)
-│   ├── config.py                 # Dev/Prod configuration
-│   ├── extensions.py             # SQLAlchemy & Flask-Login
+├── frontend/                       # THE MAIN APPLICATION
+│   ├── app/                       # Flask application
+│   │   ├── __init__.py           # App factory & setup
+│   │   ├── config.py             # Dev/Prod configuration
+│   │   ├── utils/
+│   │   │   └── db.py             # SQLite database layer
+│   │   ├── routes/
+│   │   │   ├── auth.py           # Login, register, logout
+│   │   │   ├── yoga.py           # Pose detection & analysis
+│   │   │   └── dashboard.py      # User dashboard
+│   │   ├── services/             # Business logic
+│   │   │   ├── chat_service.py
+│   │   │   ├── pose_guide_service.py
+│   │   │   ├── pose_service.py
+│   │   │   └── recommendation_service.py
+│   │   ├── templates/            # 11 HTML pages
+│   │   ├── static/               # CSS, JS, images
+│   │   └── ml/                   # ML models & utilities
 │   │
-│   ├── models/
-│   │   └── __init__.py           # Database models (User, YogaPose, etc.)
-│   │
-│   ├── routes/
-│   │   ├── auth.py               # Login, register, logout
-│   │   ├── yoga.py               # Pose detection & history
+│   ├── data/                     # Yoga pose reference images (80+ poses)
+│   ├── dataset/                  # Training data & reference files
+│   ├── run.py                    # Local development entry point
+│   └── wsgi.py                   # Production entry point (gunicorn)
+│
+├── Procfile                      # Render deployment config
+├── requirements.txt              # Python dependencies
+├── .env.example                  # Environment template
+├── .gitignore                    # Git ignore patterns
+├── runtime.txt                   # Python version (3.11.7)
+└── DEPLOY_RENDER.md             # Render deployment guide
+```
+
+---
+
+## 🚀 Quick Start
+
+### 1. Local Development
+
+```bash
+# Install dependencies (from project root)
+pip install -r requirements.txt
+
+# Navigate to frontend
+cd frontend
+
+# Run locally
+python run.py
+
+# Open http://localhost:5000 in your browser
+```
+
+### 2. Create an Account
+
+1. Visit http://localhost:5000
+2. Click "Register"
+3. Enter name, email, password
+4. Log in with your credentials
+5. Explore the dashboard and try pose analysis!
+
+### 3. Deploy on Render (Free)
+
+**See [DEPLOY_RENDER.md](DEPLOY_RENDER.md) for complete instructions**
+
+Quick steps:
+1. Push code to GitHub (if not already done)
+2. Go to [render.com](https://render.com) and sign up
+3. Click "New Web Service" → Connect your GitHub repo
+4. Set build command: `pip install -r requirements.txt`
+5. Set start command: `cd frontend && gunicorn -w 1 -b 0.0.0.0:$PORT --timeout 60 wsgi:app`
+6. Add environment: `FLASK_ENV=production` and `SECRET_KEY=<your-secret>`
+7. Deploy! ✅
+
+---
+
+## 💾 Database Schema
+
+SQLite automatically creates these tables on first run:
+
+### users
+```
+id (INTEGER PRIMARY KEY)
+name (TEXT)
+email (TEXT UNIQUE)
+password_hash (TEXT)
+created_at (TIMESTAMP)
+updated_at (TIMESTAMP)
+```
+
+### yoga_poses
+```
+id (INTEGER PRIMARY KEY)
+pose_name (TEXT UNIQUE)
+description (TEXT)
+difficulty_level (TEXT)
+benefits (TEXT)
+precautions (TEXT)
+created_at (TIMESTAMP)
+```
+
+### user_pose_history
+```
+id (INTEGER PRIMARY KEY)
+user_id (INTEGER, FK → users)
+pose_id (INTEGER, FK → yoga_poses)
+accuracy_score (REAL)
+duration_seconds (INTEGER)
+feedback (TEXT)
+image_path (TEXT)
+performed_at (TIMESTAMP)
+```
+
+### recommendations
+```
+id (INTEGER PRIMARY KEY)
+user_id (INTEGER, FK → users)
+recommended_pose_ids (TEXT, JSON)
+recommendation_reason (TEXT)
+generated_at (TIMESTAMP)
+```
+
+---
+
+## 🔐 Security
+
+- ✅ **Password Hashing**: Werkzeug PBKDF2-SHA256 (never plaintext)
+- ✅ **SQL Injection Prevention**: Parameterized queries (`?` placeholders)
+- ✅ **Session Security**: Flask secure cookies
+- ✅ **Secret Key**: Required in production (set via `SECRET_KEY` env var)
+
+---
+
+## 🌐 API Routes
+
+### Authentication
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/` | Landing page |
+| GET | `/about` | About page |
+| GET/POST | `/auth/register` | User registration |
+| GET/POST | `/auth/login` | User login |
+| POST | `/auth/logout` | User logout |
+
+### Dashboard
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/dashboard` | Main dashboard (requires login) |
+
+### Yoga Analysis
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/yoga1`, `/yoga2`, `/yoga3` | Pose analysis pages |
+| POST | `/analyze` | Analyze uploaded image |
+
+---
+
+## 📦 Dependencies
+
+### Core
+- `flask>=3.0` — Web framework
+- `python-dotenv>=1.0` — Environment config
+- `gunicorn>=21.2` — Production server
+- `requests>=2.31` — HTTP client
+
+### ML/Computer Vision
+- `mediapipe>=0.10.30` — Pose detection
+- `opencv-python>=4.9` — Image processing
+- `numpy>=1.26` — Numerical computing
+- `pillow>=10.2` — Image manipulation
+
+### Data Science
+- `pandas>=2.2` — Data analysis
+- `scikit-learn>=1.4` — ML algorithms
+- `scipy>=1.12` — Scientific computing
+
+### Testing
+- `pytest>=8.0` — Testing framework
+
+---
+
+## 🛠️ Development Workflow
+
+### Running Tests
+```bash
+cd frontend
+pytest tests/
+```
+
+### Switching Database Backends (Local Development)
+
+**SQLite (default):**
+```bash
+# .env
+DB_TYPE=sqlite
+```
+
+**MySQL (if you have a local MySQL server):**
+```bash
+# .env
+DB_TYPE=mysql
+DB_HOST=localhost
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=yoga
+```
+
+### Configuration
+
+All settings live in `frontend/app/config.py`:
+- `DEBUG` — Enable debug mode
+- `SECRET_KEY` — Session encryption key
+- `DB_TYPE` — Database type (sqlite/mysql)
+- `SQLITE_DB_PATH` — Path to SQLite file
+- `SAVED_IMAGES_DIR` — Where to store uploaded images
+
+---
+
+## 🐛 Troubleshooting
+
+### App won't start locally
+```bash
+# Make sure you're in the frontend directory
+cd frontend
+python run.py
+```
+
+### Database errors
+```bash
+# SQLite database is created automatically, but you can delete it to reset:
+cd frontend
+rm align_yoga.db
+python run.py  # Will recreate database
+```
+
+### Registration/Login not working
+1. Check app is running (`python run.py` shows no errors)
+2. Verify you're accessing `/auth/register` not just `/register`
+3. Check console for SQL errors
+
+### Render deployment fails
+See [DEPLOY_RENDER.md](DEPLOY_RENDER.md#troubleshooting) for detailed troubleshooting
+
+---
+
+## 📚 Documentation
+
+- **[DEPLOY_RENDER.md](DEPLOY_RENDER.md)** — Complete Render deployment guide
+- **[.env.example](.env.example)** — Environment variable template
+- **[Flask Documentation](https://flask.palletsprojects.com/)** — Web framework
+- **[MediaPipe Docs](https://developers.google.com/mediapipe/)** — Pose detection
+- **[SQLite Docs](https://www.sqlite.org/docs.html)** — Database
+
+---
+
+## 🎓 Learning Resources
+
+Build on this project:
+1. Add more pose types in `frontend/data/`
+2. Improve ML model accuracy with custom training data
+3. Add social features (friend connections, shared workouts)
+4. Integrate wearables (Apple Watch, Fitbit) for real-time metrics
+5. Add video tutorial integration
+
+---
+
+## 📝 License
+
+[Specify your license here]
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! To contribute:
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add NewFeature'`)
+4. Push to branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request
+
+---
+
+## 💬 Support
+
+- **Issues**: Create an issue on GitHub
+- **Discussions**: Start a discussion on GitHub
+- **Email**: [Your email here]
+
+---
+
+**Happy yoga! 🧘‍♀️✨**
 │   │   └── dashboard.py          # User dashboard
 │   │
 │   ├── templates/                # HTML pages (your existing ones!)
