@@ -39,6 +39,14 @@ _BEGINNER_POSES = ["Sukhasana", "Vriksasana", "Adho Mukha Svanasana"]
 
 
 def _allowed_file(filename: str) -> bool:
+    """Check if file extension is allowed for upload.
+    
+    Args:
+        filename: Original filename from upload
+        
+    Returns:
+        True if file extension is in ALLOWED_EXTENSIONS config, False otherwise
+    """
     return (
         "." in filename
         and filename.rsplit(".", 1)[1].lower()
@@ -51,6 +59,11 @@ def _allowed_file(filename: str) -> bool:
 @yoga_bp.route("/home")
 @login_required
 def home():
+    """Display home/dashboard page for logged-in users.
+    
+    Shows welcome message and quick links to yoga sessions.
+    """
+    logger.info(f"User accessed home: {session.get('user_email')}")
     return render_template("home.html", user_name=session.get("user_name"))
 
 
@@ -59,25 +72,34 @@ def home():
 @yoga_bp.route("/yoga1", methods=["GET", "POST"])
 @login_required
 def yoga1():
-    recommender = get_recommender()
+    """Mood-based pose recommendation engine.
+    
+    GET: Display mood selection interface
+    POST: Process mood selection and return personalized pose recommendations
+    """
+    try:
+        recommender = get_recommender()
 
-    if request.method == "POST":
-        mood = request.form.get("mood", "").strip()
-        if not mood or mood not in recommender.available_moods:
-            flash("Please select a valid mood.", "error")
-            return redirect(url_for("yoga.yoga1"))
+        if request.method == "POST":
+            mood = request.form.get("mood", "").strip()
+            if not mood or mood not in recommender.available_moods:
+                flash("Please select a valid mood.", "error")
+                logger.warning(f"Invalid mood selected: {mood}")
+                return redirect(url_for("yoga.yoga1"))
 
-        recommended_poses = recommender.recommend(
-            mood, top_n=current_app.config["TOP_POSES"]
-        )
-        pose_guides = get_pose_guides(recommended_poses)
+            recommended_poses = recommender.recommend(
+                mood, top_n=current_app.config["TOP_POSES"]
+            )
+            logger.info(f"Recommended {len(recommended_poses)} poses for mood: {mood}")
+            
+            pose_guides = get_pose_guides(recommended_poses)
 
-        # Copy one reference image per pose into static/img for display.
-        poses_dir = current_app.config["POSES_DIR"]
-        img_dir = os.path.join(current_app.static_folder, "img")
-        os.makedirs(img_dir, exist_ok=True)
+            # Copy one reference image per pose into static/img for display
+            poses_dir = current_app.config["POSES_DIR"]
+            img_dir = os.path.join(current_app.static_folder, "img")
+            os.makedirs(img_dir, exist_ok=True)
 
-        recommended_items = []
+            recommended_items = []
         for pose in recommended_poses:
             pose_dir = os.path.join(poses_dir, pose)
             if not os.path.isdir(pose_dir):
