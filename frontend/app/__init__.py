@@ -8,8 +8,13 @@ and allows multiple configurations (dev, prod, test).
 
 import os
 import sys
-from flask import Flask, g
+import logging
+from flask import Flask, g, jsonify
 from .config import config
+
+# Configure logging to see errors in production
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 def create_app(env: str = "default") -> Flask:
@@ -43,6 +48,31 @@ def create_app(env: str = "default") -> Flask:
             db = g.pop("db", None)
             if db is not None and db.is_connected():
                 db.close()
+
+        # Error handler for 500 Internal Server Error
+        @app.errorhandler(500)
+        def handle_500(error):
+            logger.error(f"500 Error: {error}", exc_info=True)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            return jsonify({
+                "error": "Internal Server Error",
+                "message": str(error)
+            }), 500
+
+        # Error handler for database connection errors
+        @app.errorhandler(Exception)
+        def handle_exception(error):
+            # Pass through HTTP errors
+            if hasattr(error, 'code'):
+                return error
+            logger.error(f"Unhandled Exception: {error}", exc_info=True)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+            return jsonify({
+                "error": "Server Error",
+                "message": str(error)
+            }), 500
 
         return app
     except Exception as e:

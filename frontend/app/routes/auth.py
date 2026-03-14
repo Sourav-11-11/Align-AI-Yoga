@@ -54,28 +54,35 @@ def about():
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        name = request.form["name"].strip()
-        email = request.form["email"].strip().lower()
-        password = request.form["password"]
-        confirm = request.form["c_password"]
+        try:
+            name = request.form["name"].strip()
+            email = request.form["email"].strip().lower()
+            password = request.form["password"]
+            confirm = request.form["c_password"]
 
-        if password != confirm:
-            flash("Passwords do not match.", "error")
-            return render_template("register.html")
+            if password != confirm:
+                flash("Passwords do not match.", "error")
+                return render_template("register.html")
 
-        existing = fetchone("SELECT id FROM users WHERE email = %s", (email,))
-        if existing:
-            flash("An account with that email already exists.", "error")
-            return render_template("register.html")
+            existing = fetchone("SELECT id FROM users WHERE email = %s", (email,))
+            if existing:
+                flash("An account with that email already exists.", "error")
+                return render_template("register.html")
 
-        # Hash the password before storing — NEVER store plaintext passwords.
-        hashed = generate_password_hash(password)
-        execute(
-            "INSERT INTO users (name, email, password_hash) VALUES (%s, %s, %s)",
-            (name, email, hashed),
-        )
-        flash("Account created! Please log in.", "success")
-        return redirect(url_for("auth.login"))
+            # Hash the password before storing — NEVER store plaintext passwords.
+            hashed = generate_password_hash(password)
+            execute(
+                "INSERT INTO users (name, email, password_hash) VALUES (%s, %s, %s)",
+                (name, email, hashed),
+            )
+            flash("Account created! Please log in.", "success")
+            return redirect(url_for("auth.login"))
+        except KeyError as e:
+            flash(f"Missing form field: {e}", "error")
+            return render_template("register.html"), 400
+        except Exception as e:
+            flash(f"Registration failed: {str(e)}", "error")
+            return render_template("register.html"), 500
 
     return render_template("register.html")
 
@@ -85,24 +92,31 @@ def register():
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        email = request.form["email"].strip().lower()
-        password = request.form["password"]
+        try:
+            email = request.form["email"].strip().lower()
+            password = request.form["password"]
 
-        user = fetchone(
-            "SELECT id, name, email, password_hash FROM users WHERE email = %s",
-            (email,),
-        )
+            user = fetchone(
+                "SELECT id, name, email, password_hash FROM users WHERE email = %s",
+                (email,),
+            )
 
-        # Constant-time check prevents user-enumeration timing attacks.
-        if not user or not check_password_hash(user[3], password):
-            flash("Invalid email or password.", "error")
-            return render_template("login.html")
+            # Constant-time check prevents user-enumeration timing attacks.
+            if not user or not check_password_hash(user[3], password):
+                flash("Invalid email or password.", "error")
+                return render_template("login.html")
 
-        session.clear()
-        session["user_id"] = user[0]
-        session["user_name"] = user[1]
-        session["user_email"] = user[2]
-        return redirect(url_for("yoga.home"))
+            session.clear()
+            session["user_id"] = user[0]
+            session["user_name"] = user[1]
+            session["user_email"] = user[2]
+            return redirect(url_for("yoga.home"))
+        except KeyError as e:
+            flash(f"Missing form field: {e}", "error")
+            return render_template("login.html"), 400
+        except Exception as e:
+            flash(f"Login failed: {str(e)}", "error")
+            return render_template("login.html"), 500
 
     return render_template("login.html")
 
